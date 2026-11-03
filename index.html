@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Kartu & Pemetaan Nomor Bangku - SMPN 3 Besuki</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel Import & Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        kop: ['Times New Roman', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS Print Styles */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+            html, body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                font-size: 11pt !important;
+                font-family: 'Times New Roman', Times, serif !important;
+            }
+            header, footer, nav, .no-print {
+                display: none !important;
+            }
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            .tab-content {
+                display: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .tab-content:not(.hidden) {
+                display: block !important;
+            }
+            .print-area {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .page-break {
+                page-break-after: always !important;
+                break-after: page !important;
+                margin-bottom: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .card-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 5mm 6mm !important;
+                padding: 4mm 0 !important;
+                margin: 0 auto !important;
+                box-sizing: border-box !important;
+                border: none !important;
+            }
+            .desk-3x4-grid {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 3mm !important;
+                padding: 4mm 0 !important;
+                margin: 0 auto !important;
+                box-sizing: border-box !important;
+                border: none !important;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        .modal-bg {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        .desk-3x4-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3mm;
+        }
+
+        /* Styling Efek Ketebalan Stempel & TTD */
+        .thick-stamp-filter {
+            filter: contrast(160%) brightness(75%) drop-shadow(0px 0px 0.7px #000);
+        }
+        .thick-sig-filter {
+            filter: contrast(160%) brightness(70%) drop-shadow(0px 0px 0.7px #000);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header Navigation Bar -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-30 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-600 flex items-center justify-center text-white font-bold text-xl shadow">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-bold text-base md:text-lg leading-tight">Generator Kartu & Nomor Meja Ujian SMPN 3 Besuki</h1>
+                        <span id="storage-status-badge" class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-hard-drive text-[9px]"></i> Memori Perangkat Aktif
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">Pemetaan Otomatis Pasangan Kelas, Urut Abjad A-Z & Penataan Ruang</p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Buttons -->
+            <nav class="flex bg-slate-800 p-1 rounded-xl text-xs md:text-sm font-medium overflow-x-auto max-w-full">
+                <button onclick="switchTab('tab-setup')" id="nav-tab-setup" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-database"></i> <span>1. Data & Kop</span>
+                </button>
+                <button onclick="switchTab('tab-shuffle')" id="nav-tab-shuffle" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-layer-group"></i> <span>2. Pemetaan Ruang & Pasangan</span>
+                </button>
+                <button onclick="switchTab('tab-preview-cards')" id="nav-tab-preview-cards" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-id-badge"></i> <span>3. Kartu Ujian</span>
+                </button>
+                <button onclick="switchTab('tab-preview-desk')" id="nav-tab-preview-desk" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-ticket-simple"></i> <span>4. Nomor Bangku</span>
+                </button>
+                <button onclick="switchTab('tab-preview-roster')" id="nav-tab-preview-roster" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-clipboard-user"></i> <span>5. Daftar Peserta Ruang</span>
+                </button>
+                <button onclick="switchTab('tab-preview-recap')" id="nav-tab-preview-recap" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-square-poll-vertical"></i> <span>6. Rekap Ruang & Kelas</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 no-print"></div>
+
+        <!-- TAB 1: DATA SISWA & KOP SEKOLAH -->
+        <section id="tab-setup" class="tab-content space-y-6">
+            
+            <!-- School Kop & Exam Metadata -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between border-b pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-cyan-50 text-cyan-700 rounded-lg">
+                            <i class="fa-solid fa-school text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Pengaturan Kop Resmi SMPN 3 Besuki & Identitas Ujian</h2>
+                            <p class="text-xs text-slate-500">Semua perubahan tersimpan otomatis di perangkat (LocalStorage)</p>
+                        </div>
+                    </div>
+                    <button onclick="resetConfigToDefault()" class="text-xs font-semibold text-slate-600 hover:text-cyan-700 underline">
+                        Reset Kop Ke Default
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Instansi Atas (Baris 1)</label>
+                        <input type="text" id="cfg-gov1" value="PEMERINTAH KABUPATEN SITUBONDO" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Dinas (Baris 2)</label>
+                        <input type="text" id="cfg-gov2" value="DINAS PENDIDIKAN DAN KEBUDAYAAN" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Sekolah (Baris 3)</label>
+                        <input type="text" id="cfg-school" value="SMP NEGERI 3 BESUKI" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 font-bold border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Sekolah / Sub-Header</label>
+                        <input type="text" id="cfg-address" value="Jl. Olahraga No. 12 Besuki, Kab. Situbondo - Jawa Timur" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Asesmen / Jenis Ujian</label>
+                        <input type="text" id="cfg-exam-name" value="ASESMEN SUMATIF AKHIR SEMESTER (ASAS) GANJIL" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 font-semibold border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tahun Pelajaran</label>
+                            <input type="text" id="cfg-tapel" value="2026/2027" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Semester</label>
+                            <select id="cfg-semester" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                                <option value="Ganjil">Ganjil</option>
+                                <option value="Genap">Genap</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kota & Tanggal Kartu</label>
+                        <input type="text" id="cfg-date" value="Besuki, 1 Desember 2026" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Kepala Sekolah</label>
+                        <input type="text" id="cfg-principal" value="Drs. Tubias Sugiarto" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Kepala Sekolah</label>
+                        <input type="text" id="cfg-nip" value="196712061997031003" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Jabatan TTD Kiri Roster</label>
+                        <input type="text" id="cfg-committee" value="Ketua Panitia ASAS Ganjil" onchange="saveHeaderConfigToCloud()" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Logo, Stempel & Signature Upload Section -->
+                <div class="mt-6 pt-4 border-t grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Logo Kiri (Pemkab) -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 border rounded-lg bg-white flex items-center justify-center overflow-hidden p-0.5">
+                                <img id="custom-logo-left-img" class="w-full h-full object-contain" alt="Logo Pemkab">
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800">Logo Kiri (Pemkab)</span>
+                                <span class="text-[10px] text-slate-500">Unggah PNG/JPG</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-2 py-1 rounded transition">
+                                Unggah
+                                <input type="file" accept="image/*" class="hidden" onchange="handleLogoLeftUpload(event)">
+                            </label>
+                            <button onclick="resetLogoLeft()" class="text-xs text-red-600 px-1 py-1">Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- Logo Kanan (Sekolah) -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 border rounded-lg bg-white flex items-center justify-center overflow-hidden p-0.5">
+                                <img id="custom-logo-right-img" class="w-full h-full object-contain" alt="Logo Kanan">
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800">Logo Kanan (Sekolah)</span>
+                                <span class="text-[10px] text-slate-500">Unggah PNG/JPG</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-2 py-1 rounded transition">
+                                Unggah
+                                <input type="file" accept="image/*" class="hidden" onchange="handleLogoRightUpload(event)">
+                            </label>
+                            <button onclick="resetLogoRight()" class="text-xs text-red-600 px-1 py-1">Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- Stempel Basah Super Jumbo & Menindih -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 border rounded-lg bg-white flex items-center justify-center overflow-hidden p-0.5">
+                                <i id="default-stempel-icon" class="fa-solid fa-stamp text-slate-400 text-xl"></i>
+                                <img id="custom-stempel-img" class="w-full h-full object-contain hidden thick-stamp-filter" alt="Stempel">
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800">Stempel Basah</span>
+                                <span class="text-[10px] text-slate-500">PNG Transparan (Tebal Jumbo)</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-2 py-1 rounded transition">
+                                Unggah
+                                <input type="file" id="stempel-input" accept="image/*" class="hidden" onchange="handleStempelUpload(event)">
+                            </label>
+                            <button onclick="resetStempel()" class="text-xs text-red-600 px-1 py-1">Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- Tanda Tangan Kepsek Tebal Jumbo -->
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 border rounded-lg bg-white flex items-center justify-center overflow-hidden p-0.5">
+                                <i id="default-signature-icon" class="fa-solid fa-signature text-slate-400 text-xl"></i>
+                                <img id="custom-signature-img" class="w-full h-full object-contain hidden thick-sig-filter" alt="Tanda Tangan">
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800">Tanda Tangan</span>
+                                <span class="text-[10px] text-slate-500">PNG Transparan (Tebal Jumbo)</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-2 py-1 rounded transition">
+                                Unggah
+                                <input type="file" id="signature-input" accept="image/*" class="hidden" onchange="handleSignatureUpload(event)">
+                            </label>
+                            <button onclick="resetSignature()" class="text-xs text-red-600 px-1 py-1">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Master Data Section Header -->
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4 mb-6 mt-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                            <i class="fa-solid fa-users text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Data Master Siswa (Auto Sort A-Z & Autosave)</h2>
+                            <p class="text-xs text-slate-500">Data diinput via Import/Paste/Modal. Siswa diurutkan otomatis A-Z per kelas & mengisi No. Urut serta No. Ujian resmi.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="openAddStudentModal()" class="bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-user-plus"></i> + Tambah Siswa Baru
+                        </button>
+                        <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-file-excel"></i> Import Excel
+                            <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="importExcelFile(event)">
+                        </label>
+                        <button onclick="openPasteModal()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-paste"></i> Paste Excel / Text
+                        </button>
+                        <button onclick="exportToExcel()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-download"></i> Export Excel
+                        </button>
+                        <button onclick="askClearAllStudents()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold px-3 py-2.5 rounded-lg border border-red-200 transition">
+                            <i class="fa-solid fa-trash-can"></i> Hapus Semua Data Siswa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Class Counts Grid -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Distribusi Siswa Per Kelas</h3>
+                        <span id="total-student-badge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-cyan-100 text-cyan-800">Total: 0 Siswa</span>
+                    </div>
+                    <div id="class-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-2 text-center text-xs">
+                        <!-- Dynamic class badges -->
+                    </div>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="relative w-full sm:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                            <input type="text" id="student-search-input" onkeyup="renderStudentTable()" placeholder="Cari nama, NIS, NISN, No. Ujian..." class="w-full text-xs pl-8 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                        </div>
+                        <select id="filter-class-select" onchange="renderStudentTable()" class="text-xs p-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white font-medium">
+                            <option value="ALL">Semua Kelas</option>
+                            <optgroup label="Kelas 7">
+                                <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option>
+                            </optgroup>
+                            <optgroup label="Kelas 8">
+                                <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option>
+                            </optgroup>
+                            <optgroup label="Kelas 9">
+                                <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Student Data Table -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b text-slate-600 font-bold uppercase tracking-wider">
+                            <tr>
+                                <th class="p-3 w-12 text-center">No</th>
+                                <th class="p-3">NIS</th>
+                                <th class="p-3">NISN</th>
+                                <th class="p-3">Nama Lengkap Siswa (Abjad A-Z)</th>
+                                <th class="p-3 text-center">Kelas</th>
+                                <th class="p-3 text-center">No. Urut Kelas</th>
+                                <th class="p-3 text-center">No. Ujian</th>
+                                <th class="p-3 text-center">Ruang / Bangku</th>
+                                <th class="p-3 text-center w-24">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body" class="divide-y divide-slate-100 bg-white">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PEMETAAN OTOMATIS PEMBAGIAN RUANG DAN PASANGAN KELAS -->
+        <section id="tab-shuffle" class="tab-content space-y-6 hidden">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between border-b pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-indigo-50 text-indigo-700 rounded-lg">
+                            <i class="fa-solid fa-layer-group text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Pemetaan Otomatis Pembagian Ruang & Pasangan Kelas</h2>
+                            <p class="text-xs text-slate-500">Atur kuota detail per ruangan (misal: Ruang 1 total 33 siswa dengan 16 Kelas A + 17 Kelas B, Ruang 2 total 32 siswa dengan 16 + 16).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- Left Config & Pairing Setup Panel -->
+                    <div class="lg:col-span-5 space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-gears text-indigo-600"></i> Konfigurasi Kapasitas & Pasangan Ruang
+                        </h3>
+
+                        <!-- Room Quotas Setup -->
+                        <div class="bg-white p-3.5 rounded-xl border space-y-3">
+                            <span class="block text-xs font-bold text-indigo-950">1. Kuota Default Per Ruangan</span>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1">Default Kuota Kelas A</label>
+                                    <input type="number" id="cfg-quota-class-a" value="16" min="1" max="35" onchange="savePairingConfigToCloud()" class="w-full text-xs font-bold p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-600 mb-1">Default Kuota Kelas B</label>
+                                    <input type="number" id="cfg-quota-class-b" value="16" min="1" max="35" onchange="savePairingConfigToCloud()" class="w-full text-xs font-bold p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Class Pairings List Engine & Custom Quota per Room Override -->
+                        <div class="bg-white p-3.5 rounded-xl border space-y-3">
+                            <div class="flex items-center justify-between border-b pb-2">
+                                <span class="block text-xs font-bold text-indigo-950">2. Daftar Pasangan Kelas Ujian</span>
+                                <button onclick="addNewPairRow()" class="text-[11px] bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold px-2 py-1 rounded transition">
+                                    + Tambah Pasangan
+                                </button>
+                            </div>
+
+                            <div id="pair-rows-container" class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                                <!-- Dynamic pair rows inserted via JS -->
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="generateStandardPairs()" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-2.5 py-2 rounded w-full border border-slate-300 transition flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i> Generate Pasangan Standar (8A+9A, 8B+9B...)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pengaturan Khusus Ruang 1 dst (Override Kuota Per Ruangan Spesifik) -->
+                        <div class="bg-white p-3.5 rounded-xl border space-y-2">
+                            <div class="flex items-center justify-between border-b pb-1.5">
+                                <span class="block text-xs font-bold text-indigo-950">3. Pengaturan Khusus Kuota Per Ruangan</span>
+                                <button onclick="addCustomRoomOverride()" class="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-2 py-0.5 rounded transition">
+                                    + Setting Ruang Spesifik
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-tight">Atur kuota khusus untuk ruangan tertentu jika berbeda dari default (misal: Ruang 1 = 16 Kelas A + 17 Kelas B = Total 33).</p>
+                            <div id="custom-room-overrides-container" class="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
+                                <!-- Dynamic room override rows -->
+                            </div>
+                        </div>
+
+                        <!-- Placement Pattern -->
+                        <div class="bg-white p-3.5 rounded-xl border space-y-2">
+                            <span class="block text-xs font-bold text-slate-800">4. Pola Urutan Bangku Dalam Ruangan</span>
+                            <div class="space-y-2">
+                                <label class="flex items-start gap-2 p-2.5 bg-slate-50 rounded-lg border hover:border-indigo-300 cursor-pointer transition">
+                                    <input type="radio" name="auto_placement_pattern" value="INTERLEAVE" checked onchange="savePairingConfigToCloud(); executeAutoPairingAllocation();" class="mt-0.5 text-indigo-600">
+                                    <div>
+                                        <span class="block text-xs font-bold text-slate-800">Selang-Seling (8A-1, 9A-1, 8A-2, 9A-2...)</span>
+                                        <span class="text-[10px] text-slate-500 block leading-tight">Posisi duduk berselingan antara dua kelas di meja berdekatan.</span>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-start gap-2 p-2.5 bg-slate-50 rounded-lg border hover:border-indigo-300 cursor-pointer transition">
+                                    <input type="radio" name="auto_placement_pattern" value="SEQUENTIAL" onchange="savePairingConfigToCloud(); executeAutoPairingAllocation();" class="mt-0.5 text-indigo-600">
+                                    <div>
+                                        <span class="block text-xs font-bold text-slate-800">Berurutan Kelompok (8A dahulu, lalu 9A)</span>
+                                        <span class="text-[10px] text-slate-500 block leading-tight">Kelas pertama menempati baris awal, dilanjutkan kelas kedua.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button onclick="executeAutoPairingAllocation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition transform active:scale-95">
+                            <i class="fa-solid fa-bolt"></i> Jalankan Pemetaan Otomatis Semua Ruang
+                        </button>
+                    </div>
+
+                    <!-- Right Mapping Breakdown & Results -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Hasil Rincian Pemetaan Ruangan & Sisa Siswa</h3>
+                            <div class="flex items-center gap-2">
+                                <span id="auto-room-count-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-100 text-indigo-800">Belum dipetakan</span>
+                                <button onclick="clearAllAllocatedRooms()" title="Hapus Semua Hasil Pemetaan Ruang" class="text-xs font-bold px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition flex items-center gap-1.5 border border-red-200 shadow-sm">
+                                    <i class="fa-solid fa-trash-can"></i> Hapus Semua Hasil Pemetaan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Breakdown Summary -->
+                        <div id="pair-breakdown-summary" class="bg-indigo-950 text-white p-4 rounded-xl space-y-2 text-xs shadow-inner">
+                            <div class="font-bold border-b border-indigo-800 pb-1.5 flex items-center justify-between text-indigo-200">
+                                <span><i class="fa-solid fa-calculator mr-1"></i> Ringkasan Pembagian Pasangan</span>
+                                <span id="summary-total-placed" class="text-[11px] font-mono text-emerald-400">0 Siswa Dialokasikan</span>
+                            </div>
+                            <div id="summary-breakdown-lines" class="space-y-1 max-h-36 overflow-y-auto font-mono text-[11px] text-indigo-100">
+                                <!-- Printed dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Grid Display of Generated Rooms -->
+                        <div id="auto-room-allocation-results" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1">
+                            <!-- Filled dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: PRATINJAU & CETAK KARTU UJIAN -->
+        <section id="tab-preview-cards" class="tab-content space-y-6 hidden">
+            <div class="bg-gradient-to-r from-slate-900 via-cyan-900 to-slate-900 text-white rounded-2xl shadow-lg p-5 no-print flex flex-wrap items-center justify-between gap-4 border border-cyan-800">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-cyan-500/20 text-cyan-300 rounded-xl border border-cyan-400/30">
+                        <i class="fa-solid fa-id-badge text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Cetak Kartu Ujian (Stempel Jumbo Overlap & Garis Lebih Tebal)</h3>
+                        <p class="text-xs text-slate-300">Format Persegi 1:1, Titik Dua Sejajar, Stempel Menindih TTD Kiri Presisi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <select id="card-room-filter" onchange="renderCardsPreview()" class="text-xs p-2.5 rounded-xl border border-slate-700 bg-slate-800 text-white font-medium focus:ring-2 focus:ring-cyan-400 outline-none">
+                        <option value="ALL">Semua Ruangan</option>
+                    </select>
+                    <button type="button" onclick="triggerPrint('cards')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-extrabold px-6 py-3 rounded-xl shadow-lg flex items-center gap-2.5 transition transform hover:scale-105 active:scale-95 border border-emerald-400 cursor-pointer">
+                        <i class="fa-solid fa-print text-lg"></i> <span>CETAK KARTU UJIAN</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="cards-preview-container" class="print-area bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 min-h-[600px] overflow-x-auto">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 4: PRATINJAU & CETAK NOMOR BANGKU -->
+        <section id="tab-preview-desk" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 no-print flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-purple-50 text-purple-700 rounded-lg">
+                        <i class="fa-solid fa-ticket-simple text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm">Pratinjau Label Nomor Bangku Meja (Ukuran Ringkas 3 x 4 cm / 20 Label Per A4)</h3>
+                        <p class="text-xs text-slate-500">Memuat Nomor Bangku, Nama, Kelas, No. Ujian & Ruang</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <select id="desk-room-filter" onchange="renderDeskPreview()" class="text-xs p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none bg-white font-medium">
+                        <option value="ALL">Semua Ruangan</option>
+                    </select>
+                    <button onclick="triggerPrint('desk')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow flex items-center gap-2 transition">
+                        <i class="fa-solid fa-print"></i> Cetak Nomor Bangku
+                    </button>
+                </div>
+            </div>
+
+            <div id="desk-preview-container" class="print-area bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 min-h-[600px] overflow-x-auto">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 5: PRATINJAU & CETAK DAFTAR PESERTA PER RUANG -->
+        <section id="tab-preview-roster" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 no-print flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                        <i class="fa-solid fa-clipboard-user text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm">Pratinjau Daftar Hadir & Peserta Per Ruangan</h3>
+                        <p class="text-xs text-slate-500">Urut kelas teratur, 2 Logo Kop (Pemkab & Sekolah), TTD Panitia & Kepsek dengan Stempel Jumbo Overlay</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <select id="roster-room-filter" onchange="renderRosterPreview()" class="text-xs p-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white font-medium">
+                        <option value="ALL">Semua Ruangan</option>
+                    </select>
+                    <button onclick="triggerPrint('roster')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow flex items-center gap-2 transition">
+                        <i class="fa-solid fa-print"></i> Cetak Daftar Ruang
+                    </button>
+                </div>
+            </div>
+
+            <div id="roster-preview-container" class="print-area bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 min-h-[600px] overflow-x-auto">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 6: PRATINJAU & CETAK REKAP PESERTA PER RUANG & KELAS -->
+        <section id="tab-preview-recap" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 no-print flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-50 text-blue-700 rounded-lg">
+                        <i class="fa-solid fa-square-poll-vertical text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm">Pratinjau Rekapitulasi Peserta Ujian Per Ruang & Kelas</h3>
+                        <p class="text-xs text-slate-500">Ringkasan jumlah distribusi siswa per ruangan dan per kelas untuk Panitia / Pengawas</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="triggerPrint('recap')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow flex items-center gap-2 transition">
+                        <i class="fa-solid fa-print"></i> Cetak Rekapitulasi
+                    </button>
+                </div>
+            </div>
+
+            <div id="recap-preview-container" class="print-area bg-slate-200/60 p-4 sm:p-8 rounded-2xl border border-slate-300 min-h-[600px] overflow-x-auto">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PASTE DATA MODAL -->
+    <div id="modal-paste" class="fixed inset-0 z-50 modal-bg flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-paste text-cyan-600"></i> Paste Data Dari Excel / Text
+                </h3>
+                <button onclick="closePasteModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+                Paste data nama dan kelas per baris (bisa dipisah tab atau spasi):<br>
+                <strong class="text-slate-700">Format: Nama [Tab/Spasi] Kelas [Tab] NIS [Tab] NISN</strong><br>
+                <em>Siswa akan diurutkan otomatis sesuai abjad A-Z per kelas & disimpan di browser.</em>
+            </p>
+            <textarea id="paste-text-area" rows="8" placeholder="Contoh:&#10;Ahimsa Saputra 8A&#10;Budi Santoso 8A&#10;Citra Dewi 9A&#10;Dedi Kurniawan 9A" class="w-full text-xs font-mono p-3 border rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"></textarea>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closePasteModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+                <button onclick="processPastedData()" class="px-5 py-2 text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg shadow">Impor & Urutkan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANUAL ADD/EDIT STUDENT MODAL -->
+    <div id="modal-student" class="fixed inset-0 z-50 modal-bg flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 id="modal-student-title" class="font-bold text-slate-900 text-lg">+ Tambah Siswa Baru</h3>
+                <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-500">Siswa baru akan menyisipkan posisi abjad nama (A-Z) di kelasnya dan memperbarui nomor urut serta nomor ujian.</p>
+            <input type="hidden" id="edit-student-index" value="-1">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Siswa *</label>
+                    <input type="text" id="m-student-name" placeholder="Masukkan Nama Siswa..." class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kelas *</label>
+                        <select id="m-student-class" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white font-bold">
+                            <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option>
+                            <option value="8A" selected>8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option>
+                            <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">NIS</label>
+                        <input type="text" id="m-student-nis" placeholder="Opsional" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">NISN</label>
+                    <input type="text" id="m-student-nisn" placeholder="Opsional" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeStudentModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+                <button onclick="saveStudentModal()" class="px-5 py-2 text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg shadow">Simpan & Urutkan Abjad</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REUSABLE CONFIRMATION MODAL -->
+    <div id="modal-confirm" class="fixed inset-0 z-50 modal-bg flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex items-center gap-3 text-red-600">
+                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 id="confirm-modal-title" class="font-bold text-slate-900 text-lg">Konfirmasi Tindakan</h3>
+            </div>
+            <p id="confirm-modal-message" class="text-xs text-slate-600 leading-relaxed"></p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+                <button id="confirm-modal-action-btn" class="px-5 py-2 text-xs font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 border-t border-slate-800 text-center no-print mt-auto">
+        <p>&copy; 2026 Sistem Kartu Ujian & Penataan Bangku — SMP Negeri 3 Besuki. Situbondo, Jawa Timur.</p>
+    </footer>
+
+    <!-- Firebase SDK & Application Engine -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- GLOBAL STATE ---
+        let rawStudents = [];
+        let allocatedRooms = [];
+        let customLogoLeftBase64 = null;
+        let customLogoRightBase64 = null;
+        let customStempelBase64 = null;
+        let customSignatureBase64 = null;
+        let pairRules = [];
+        let customRoomOverrides = [
+            { roomNum: 1, quotaA: 16, quotaB: 17 }
+        ];
+
+        const ALL_CLASSES = ['7A','7B','7C','7D','8A','8B','8C','8D','9A','9B','9C','9D'];
+
+        // --- LOCAL STORAGE ENGINE ---
+        function loadDataFromLocalStorage() {
+            try {
+                const savedStudents = localStorage.getItem('smpn3_students');
+                if (savedStudents) rawStudents = JSON.parse(savedStudents);
+            } catch (e) {}
+
+            try {
+                const savedHeader = localStorage.getItem('smpn3_header');
+                if (savedHeader) {
+                    const cfg = JSON.parse(savedHeader);
+                    if (cfg.gov1) document.getElementById('cfg-gov1').value = cfg.gov1;
+                    if (cfg.gov2) document.getElementById('cfg-gov2').value = cfg.gov2;
+                    if (cfg.school) document.getElementById('cfg-school').value = cfg.school;
+                    if (cfg.address) document.getElementById('cfg-address').value = cfg.address;
+                    if (cfg.examName) document.getElementById('cfg-exam-name').value = cfg.examName;
+                    if (cfg.tapel) document.getElementById('cfg-tapel').value = cfg.tapel;
+                    if (cfg.semester) document.getElementById('cfg-semester').value = cfg.semester;
+                    if (cfg.date) document.getElementById('cfg-date').value = cfg.date;
+                    if (cfg.principal) document.getElementById('cfg-principal').value = cfg.principal;
+                    if (cfg.nip) document.getElementById('cfg-nip').value = cfg.nip;
+                    if (cfg.committee) document.getElementById('cfg-committee').value = cfg.committee;
+                }
+            } catch (e) {}
+
+            try {
+                const savedPairings = localStorage.getItem('smpn3_pairings');
+                if (savedPairings) {
+                    const data = JSON.parse(savedPairings);
+                    if (data.pairs) pairRules = data.pairs;
+                    if (data.overrides) customRoomOverrides = data.overrides;
+                    if (data.pattern) {
+                        const radio = document.querySelector(`input[name="auto_placement_pattern"][value="${data.pattern}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (data.quotaClassA) document.getElementById('cfg-quota-class-a').value = data.quotaClassA;
+                    if (data.quotaClassB) document.getElementById('cfg-quota-class-b').value = data.quotaClassB;
+                }
+            } catch (e) {}
+
+            try {
+                const savedImages = localStorage.getItem('smpn3_images');
+                if (savedImages) {
+                    const data = JSON.parse(savedImages);
+                    customLogoLeftBase64 = data.customLogoLeftBase64 || null;
+                    customLogoRightBase64 = data.customLogoRightBase64 || null;
+                    customStempelBase64 = data.customStempelBase64 || null;
+                    customSignatureBase64 = data.customSignatureBase64 || null;
+
+                    const logoLeftElem = document.getElementById('custom-logo-left-img');
+                    const logoRightElem = document.getElementById('custom-logo-right-img');
+                    if (logoLeftElem) logoLeftElem.src = customLogoLeftBase64 || getPemkabLogoSvg();
+                    if (logoRightElem) logoRightElem.src = customLogoRightBase64 || getSchoolLogoSvg();
+
+                    const stempelImg = document.getElementById('custom-stempel-img');
+                    const defaultStempelIcon = document.getElementById('default-stempel-icon');
+                    if (customStempelBase64) {
+                        if (stempelImg) { stempelImg.src = customStempelBase64; stempelImg.classList.remove('hidden'); }
+                        if (defaultStempelIcon) defaultStempelIcon.classList.add('hidden');
+                    }
+
+                    const sigImg = document.getElementById('custom-signature-img');
+                    const defaultSigIcon = document.getElementById('default-signature-icon');
+                    if (customSignatureBase64) {
+                        if (sigImg) { sigImg.src = customSignatureBase64; sigImg.classList.remove('hidden'); }
+                        if (defaultSigIcon) defaultSigIcon.classList.add('hidden');
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const savedAllocated = localStorage.getItem('smpn3_allocated_rooms');
+                if (savedAllocated) allocatedRooms = JSON.parse(savedAllocated);
+            } catch (e) {}
+        }
+
+        // --- FIREBASE INITIALIZATION ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'smpn3-exam-app';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let isCloudReady = false;
+
+        const getDocRef = (collName, docId) => doc(db, 'artifacts', appId, 'public', 'data', collName, docId);
+
+        async function initCloudStorage() {
+            try {
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        const userCredential = await signInWithCustomToken(auth, __initial_auth_token);
+                        currentUser = userCredential.user;
+                    } else {
+                        const userCredential = await signInAnonymously(auth);
+                        currentUser = userCredential.user;
+                    }
+
+                    if (currentUser) {
+                        isCloudReady = true;
+                        updateStorageBadge(true);
+                        setupCloudRealtimeListeners();
+                    }
+                } else {
+                    updateStorageBadge(false);
+                }
+            } catch (err) {
+                updateStorageBadge(false);
+            }
+        }
+
+        function updateStorageBadge(cloudActive = isCloudReady) {
+            const badge = document.getElementById('storage-status-badge');
+            if (badge) {
+                if (cloudActive) {
+                    badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1";
+                    badge.innerHTML = `<i class="fa-solid fa-cloud text-[9px]"></i> Cloud Sync Aktif (${rawStudents.length} Siswa)`;
+                } else {
+                    badge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1";
+                    badge.innerHTML = `<i class="fa-solid fa-hard-drive text-[9px]"></i> Memori Perangkat Tersimpan (${rawStudents.length} Siswa)`;
+                }
+            }
+        }
+
+        // --- REALTIME SYNC ---
+        function setupCloudRealtimeListeners() {
+            if (!isCloudReady || !db || !currentUser) return;
+
+            onSnapshot(getDocRef('students', 'master'), (docSnap) => {
+                if (docSnap.exists() && docSnap.data().list) {
+                    rawStudents = docSnap.data().list;
+                    try { localStorage.setItem('smpn3_students', JSON.stringify(rawStudents)); } catch(e){}
+                    renderStudentTable();
+                    updateClassStats();
+                    updateStorageBadge(true);
+                }
+            });
+
+            onSnapshot(getDocRef('settings', 'header'), (docSnap) => {
+                if (docSnap.exists()) {
+                    const cfg = docSnap.data();
+                    try { localStorage.setItem('smpn3_header', JSON.stringify(cfg)); } catch(e){}
+                    if (cfg.gov1) document.getElementById('cfg-gov1').value = cfg.gov1;
+                    if (cfg.gov2) document.getElementById('cfg-gov2').value = cfg.gov2;
+                    if (cfg.school) document.getElementById('cfg-school').value = cfg.school;
+                    if (cfg.address) document.getElementById('cfg-address').value = cfg.address;
+                    if (cfg.examName) document.getElementById('cfg-exam-name').value = cfg.examName;
+                    if (cfg.tapel) document.getElementById('cfg-tapel').value = cfg.tapel;
+                    if (cfg.semester) document.getElementById('cfg-semester').value = cfg.semester;
+                    if (cfg.date) document.getElementById('cfg-date').value = cfg.date;
+                    if (cfg.principal) document.getElementById('cfg-principal').value = cfg.principal;
+                    if (cfg.nip) document.getElementById('cfg-nip').value = cfg.nip;
+                    if (cfg.committee) document.getElementById('cfg-committee').value = cfg.committee;
+                }
+            });
+
+            onSnapshot(getDocRef('settings', 'pairings'), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    try { localStorage.setItem('smpn3_pairings', JSON.stringify(data)); } catch(e){}
+                    if (data.pairs) pairRules = data.pairs;
+                    if (data.overrides) customRoomOverrides = data.overrides;
+                    if (data.pattern) {
+                        const radio = document.querySelector(`input[name="auto_placement_pattern"][value="${data.pattern}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (data.quotaClassA) document.getElementById('cfg-quota-class-a').value = data.quotaClassA;
+                    if (data.quotaClassB) document.getElementById('cfg-quota-class-b').value = data.quotaClassB;
+                    renderPairRulesUI();
+                    renderCustomRoomOverridesUI();
+                }
+            });
+
+            onSnapshot(getDocRef('settings', 'images'), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    try { localStorage.setItem('smpn3_images', JSON.stringify(data)); } catch(e){}
+                    customLogoLeftBase64 = data.customLogoLeftBase64 || null;
+                    customLogoRightBase64 = data.customLogoRightBase64 || null;
+                    customStempelBase64 = data.customStempelBase64 || null;
+                    customSignatureBase64 = data.customSignatureBase64 || null;
+
+                    const logoLeftElem = document.getElementById('custom-logo-left-img');
+                    const logoRightElem = document.getElementById('custom-logo-right-img');
+                    if (logoLeftElem) logoLeftElem.src = customLogoLeftBase64 || getPemkabLogoSvg();
+                    if (logoRightElem) logoRightElem.src = customLogoRightBase64 || getSchoolLogoSvg();
+
+                    const stempelImg = document.getElementById('custom-stempel-img');
+                    const defaultStempelIcon = document.getElementById('default-stempel-icon');
+                    if (customStempelBase64) {
+                        if (stempelImg) { stempelImg.src = customStempelBase64; stempelImg.classList.remove('hidden'); }
+                        if (defaultStempelIcon) defaultStempelIcon.classList.add('hidden');
+                    } else {
+                        if (stempelImg) stempelImg.classList.add('hidden');
+                        if (defaultStempelIcon) defaultStempelIcon.classList.remove('hidden');
+                    }
+
+                    const sigImg = document.getElementById('custom-signature-img');
+                    const defaultSigIcon = document.getElementById('default-signature-icon');
+                    if (customSignatureBase64) {
+                        if (sigImg) { sigImg.src = customSignatureBase64; sigImg.classList.remove('hidden'); }
+                        if (defaultSigIcon) defaultSigIcon.classList.add('hidden');
+                    } else {
+                        if (sigImg) sigImg.classList.add('hidden');
+                        if (defaultSigIcon) defaultSigIcon.classList.remove('hidden');
+                    }
+                }
+            });
+
+            onSnapshot(getDocRef('settings', 'allocatedRooms'), (docSnap) => {
+                if (docSnap.exists() && docSnap.data().list) {
+                    allocatedRooms = docSnap.data().list;
+                    try { localStorage.setItem('smpn3_allocated_rooms', JSON.stringify(allocatedRooms)); } catch(e){}
+                    const breakdownLog = allocatedRooms.map(r => `${r.roomName}: [Pasangan ${r.pairName}] = ${r.seats.length} Siswa`);
+                    const totalPlaced = rawStudents.filter(s => s.room && s.room !== '').length;
+                    renderAutoPairingResults(breakdownLog, totalPlaced);
+                } else if (docSnap.exists() && docSnap.data().list === null) {
+                    allocatedRooms = [];
+                    try { localStorage.setItem('smpn3_allocated_rooms', JSON.stringify([])); } catch(e){}
+                    renderAutoPairingResults([], 0);
+                }
+            });
+        }
+
+        // --- AUTOSAVE WRAPPERS ---
+        async function saveStudentsToCloud() {
+            try { localStorage.setItem('smpn3_students', JSON.stringify(rawStudents)); } catch(e){}
+            updateStorageBadge();
+            if (!isCloudReady || !db || !currentUser) return;
+            try {
+                await setDoc(getDocRef('students', 'master'), { list: rawStudents, updatedAt: new Date().toISOString() });
+            } catch (err) {}
+        }
+
+        async function saveHeaderConfigToCloud() {
+            const cfg = getHeaderConfig();
+            try { localStorage.setItem('smpn3_header', JSON.stringify(cfg)); } catch(e){}
+            if (!isCloudReady || !db || !currentUser) return;
+            try {
+                await setDoc(getDocRef('settings', 'header'), { ...cfg, updatedAt: new Date().toISOString() });
+                showToast("Pengaturan Kop tersimpan!", "info");
+            } catch (err) {}
+        }
+
+        async function savePairingConfigToCloud() {
+            const pattern = document.querySelector('input[name="auto_placement_pattern"]:checked')?.value || 'INTERLEAVE';
+            const qClassA = document.getElementById('cfg-quota-class-a')?.value || 16;
+            const qClassB = document.getElementById('cfg-quota-class-b')?.value || 16;
+            const payload = {
+                pairs: pairRules,
+                pattern: pattern,
+                quotaClassA: qClassA,
+                quotaClassB: qClassB,
+                overrides: customRoomOverrides,
+                updatedAt: new Date().toISOString()
+            };
+
+            try { localStorage.setItem('smpn3_pairings', JSON.stringify(payload)); } catch(e){}
+            if (!isCloudReady || !db || !currentUser) return;
+            try {
+                await setDoc(getDocRef('settings', 'pairings'), payload);
+            } catch (err) {}
+        }
+
+        async function saveImagesToCloud() {
+            const payload = {
+                customLogoLeftBase64,
+                customLogoRightBase64,
+                customStempelBase64,
+                customSignatureBase64,
+                updatedAt: new Date().toISOString()
+            };
+
+            try { localStorage.setItem('smpn3_images', JSON.stringify(payload)); } catch(e){}
+            if (!isCloudReady || !db || !currentUser) return;
+            try {
+                await setDoc(getDocRef('settings', 'images'), payload);
+            } catch(err) {}
+        }
+
+        async function saveAllocatedRoomsToCloud() {
+            try { localStorage.setItem('smpn3_allocated_rooms', JSON.stringify(allocatedRooms)); } catch(e){}
+            if (!isCloudReady || !db || !currentUser) return;
+            try {
+                await setDoc(getDocRef('settings', 'allocatedRooms'), { list: allocatedRooms, updatedAt: new Date().toISOString() });
+            } catch(err) {}
+        }
+
+        // --- EXAM NUMBER & RE-INDEX ENGINE ---
+        function generateExamNo(className, seqNo) {
+            if (!className || !seqNo) return '';
+            const grade = className.charAt(0);
+            const letter = className.slice(1).toUpperCase();
+            const letterCode = letter ? (letter.charCodeAt(0) - 64) : 1;
+            const paddedIndex = String(seqNo).padStart(3, '0');
+            return `${grade}${letterCode}${paddedIndex}`;
+        }
+
+        function reindexAllStudents() {
+            if (rawStudents.length === 0) {
+                saveStudentsToCloud();
+                return;
+            }
+
+            rawStudents.sort((a, b) => {
+                if (a.class !== b.class) return a.class.localeCompare(b.class);
+                return a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
+            });
+
+            const classCounters = {};
+            rawStudents.forEach(s => {
+                if (!classCounters[s.class]) classCounters[s.class] = 1;
+                else classCounters[s.class]++;
+
+                s.classSeqNo = classCounters[s.class];
+                s.grade = s.class.charAt(0);
+                s.examNo = generateExamNo(s.class, s.classSeqNo);
+            });
+
+            saveStudentsToCloud();
+        }
+
+        // --- PAIRING & OVERRIDES UI ENGINE ---
+        function addCustomRoomOverride() {
+            const nextRoomNum = customRoomOverrides.length + 1;
+            customRoomOverrides.push({ roomNum: nextRoomNum, quotaA: 16, quotaB: 16 });
+            savePairingConfigToCloud();
+            renderCustomRoomOverridesUI();
+        }
+
+        function removeCustomRoomOverride(idx) {
+            customRoomOverrides.splice(idx, 1);
+            savePairingConfigToCloud();
+            renderCustomRoomOverridesUI();
+        }
+
+        function updateRoomOverride(idx, field, val) {
+            if (customRoomOverrides[idx]) {
+                customRoomOverrides[idx][field] = parseInt(val) || 0;
+                savePairingConfigToCloud();
+                renderCustomRoomOverridesUI();
+            }
+        }
+
+        function renderCustomRoomOverridesUI() {
+            const container = document.getElementById('custom-room-overrides-container');
+            if (!container) return;
+
+            if (customRoomOverrides.length === 0) {
+                container.innerHTML = `<div class="text-[10px] text-slate-400 italic py-1 text-center">Menggunakan kuota default untuk seluruh ruang.</div>`;
+                return;
+            }
+
+            let html = '';
+            customRoomOverrides.forEach((ov, idx) => {
+                const total = (ov.quotaA || 0) + (ov.quotaB || 0);
+                html += `
+                    <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-lg border border-slate-200 text-xs">
+                        <span class="text-[10px] font-bold text-slate-700 w-16">Ruang ${ov.roomNum}:</span>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[10px] text-slate-500">A:</span>
+                            <input type="number" min="1" max="40" value="${ov.quotaA}" onchange="window.updateRoomOverride(${idx}, 'quotaA', this.value)" class="w-10 text-center text-xs font-bold border rounded p-0.5 bg-white">
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[10px] text-slate-500">B:</span>
+                            <input type="number" min="1" max="40" value="${ov.quotaB}" onchange="window.updateRoomOverride(${idx}, 'quotaB', this.value)" class="w-10 text-center text-xs font-bold border rounded p-0.5 bg-white">
+                        </div>
+                        <span class="text-[10px] font-extrabold text-indigo-700 ml-1">Total: ${total}</span>
+                        <button onclick="window.removeCustomRoomOverride(${idx})" class="p-0.5 text-red-500 hover:text-red-700 ml-auto" title="Hapus Override Ruang">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function addNewPairRow(clsA = '8A', clsB = '9A') {
+            pairRules.push({ classA: clsA, classB: clsB });
+            savePairingConfigToCloud();
+            renderPairRulesUI();
+        }
+
+        function removePairRow(index) {
+            pairRules.splice(index, 1);
+            savePairingConfigToCloud();
+            renderPairRulesUI();
+        }
+
+        function updatePairRow(index, field, value) {
+            if (pairRules[index]) {
+                pairRules[index][field] = value;
+                savePairingConfigToCloud();
+            }
+        }
+
+        function generateStandardPairs() {
+            pairRules = [
+                { classA: '8A', classB: '9A' },
+                { classA: '8B', classB: '9B' },
+                { classA: '8C', classB: '9C' },
+                { classA: '8D', classB: '9D' },
+                { classA: '7A', classB: '7B' },
+                { classA: '7C', classB: '7D' }
+            ];
+            savePairingConfigToCloud();
+            renderPairRulesUI();
+            showToast("Berhasil membuat 6 Pasangan Kelas Standar!");
+        }
+
+        function renderPairRulesUI() {
+            const container = document.getElementById('pair-rows-container');
+            if (!container) return;
+
+            if (pairRules.length === 0) {
+                container.innerHTML = `<div class="text-[11px] text-slate-400 italic py-2 text-center">Belum ada pasangan kelas. Klik + Tambah Pasangan.</div>`;
+                return;
+            }
+
+            let html = '';
+            pairRules.forEach((rule, idx) => {
+                html += `
+                    <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-lg border border-slate-200 text-xs">
+                        <span class="text-[10px] font-bold text-slate-500 w-4">${idx + 1}.</span>
+                        <select onchange="window.updatePairRow(${idx}, 'classA', this.value)" class="p-1 border rounded bg-white text-xs font-bold outline-none flex-grow">
+                            ${ALL_CLASSES.map(c => `<option value="${c}" ${rule.classA === c ? 'selected' : ''}>Kelas ${c} (${rawStudents.filter(s => s.class === c).length})</option>`).join('')}
+                        </select>
+                        <span class="text-indigo-600 font-bold text-xs">+</span>
+                        <select onchange="window.updatePairRow(${idx}, 'classB', this.value)" class="p-1 border rounded bg-white text-xs font-bold outline-none flex-grow">
+                            ${ALL_CLASSES.map(c => `<option value="${c}" ${rule.classB === c ? 'selected' : ''}>Kelas ${c} (${rawStudents.filter(s => s.class === c).length})</option>`).join('')}
+                        </select>
+                        <button onclick="window.removePairRow(${idx})" class="p-1 text-red-500 hover:text-red-700 font-bold ml-1" title="Hapus Pasangan">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- AUTOMATIC CLASS PAIRING ALLOCATION ENGINE ---
+        function executeAutoPairingAllocation() {
+            if (rawStudents.length === 0 || pairRules.length === 0) {
+                allocatedRooms = [];
+                saveAllocatedRoomsToCloud();
+                renderAutoPairingResults([], 0);
+                showToast("Tambahkan siswa & tentukan pasangan kelas terlebih dahulu!", "warning");
+                return;
+            }
+
+            rawStudents.forEach(s => {
+                s.room = '';
+                s.seatNo = '';
+            });
+
+            const defaultQuotaA = parseInt(document.getElementById('cfg-quota-class-a')?.value) || 16;
+            const defaultQuotaB = parseInt(document.getElementById('cfg-quota-class-b')?.value) || 16;
+            const pattern = document.querySelector('input[name="auto_placement_pattern"]:checked')?.value || 'INTERLEAVE';
+
+            allocatedRooms = [];
+            let currentRoomNum = 1;
+            let totalPlacedCount = 0;
+            const breakdownLog = [];
+
+            pairRules.forEach((pair) => {
+                const classA = pair.classA;
+                const classB = pair.classB;
+
+                const studentsA = rawStudents.filter(s => s.class === classA).sort((a,b) => a.classSeqNo - b.classSeqNo);
+                const studentsB = rawStudents.filter(s => s.class === classB).sort((a,b) => a.classSeqNo - b.classSeqNo);
+
+                let ptrA = 0;
+                let ptrB = 0;
+
+                const totalA = studentsA.length;
+                const totalB = studentsB.length;
+
+                while (ptrA < totalA || ptrB < totalB) {
+                    const roomName = `Ruang ${String(currentRoomNum).padStart(2, '0')}`;
+
+                    const roomOv = customRoomOverrides.find(o => o.roomNum === currentRoomNum);
+                    const currentQuotaA = roomOv ? roomOv.quotaA : defaultQuotaA;
+                    const currentQuotaB = roomOv ? roomOv.quotaB : defaultQuotaB;
+
+                    const sliceA = studentsA.slice(ptrA, ptrA + currentQuotaA);
+                    const sliceB = studentsB.slice(ptrB, ptrB + currentQuotaB);
+
+                    ptrA += sliceA.length;
+                    ptrB += sliceB.length;
+
+                    let orderedSeats = [];
+                    if (pattern === 'INTERLEAVE') {
+                        let maxLen = Math.max(sliceA.length, sliceB.length);
+                        for (let i = 0; i < maxLen; i++) {
+                            if (i < sliceA.length) orderedSeats.push(sliceA[i]);
+                            if (i < sliceB.length) orderedSeats.push(sliceB[i]);
+                        }
+                    } else {
+                        orderedSeats = [...sliceA, ...sliceB];
+                    }
+
+                    const roomSeatObjects = [];
+                    orderedSeats.forEach((stu, sIdx) => {
+                        const seatStr = String(sIdx + 1).padStart(2, '0');
+                        const assignedStu = {
+                            ...stu,
+                            room: roomName,
+                            roomNum: currentRoomNum,
+                            seatNo: seatStr
+                        };
+
+                        const masterObj = rawStudents.find(m => m.id === stu.id);
+                        if (masterObj) {
+                            masterObj.room = roomName;
+                            masterObj.seatNo = seatStr;
+                        }
+
+                        roomSeatObjects.push(assignedStu);
+                        totalPlacedCount++;
+                    });
+
+                    if (roomSeatObjects.length > 0) {
+                        allocatedRooms.push({
+                            roomName: roomName,
+                            roomNum: currentRoomNum,
+                            pairName: `${classA} + ${classB}`,
+                            seats: roomSeatObjects
+                        });
+
+                        const rangeAStr = sliceA.length > 0 ? `[${classA}: ${sliceA.length} siswa (No. ${sliceA[0].classSeqNo}-${sliceA[sliceA.length-1].classSeqNo})]` : `[${classA} Habis]`;
+                        const rangeBStr = sliceB.length > 0 ? `[${classB}: ${sliceB.length} siswa (No. ${sliceB[0].classSeqNo}-${sliceB[sliceB.length-1].classSeqNo})]` : `[${classB} Habis]`;
+
+                        breakdownLog.push(`${roomName}: ${rangeAStr} + ${rangeBStr} = ${roomSeatObjects.length} Siswa`);
+
+                        currentRoomNum++;
+                    }
+                }
+            });
+
+            renderAutoPairingResults(breakdownLog, totalPlacedCount);
+            renderStudentTable();
+            saveStudentsToCloud();
+            saveAllocatedRoomsToCloud();
+            showToast(`Berhasil memetakan ${totalPlacedCount} siswa ke ${allocatedRooms.length} ruangan!`);
+        }
+
+        function clearAllAllocatedRooms() {
+            if (allocatedRooms.length === 0) return;
+            openConfirmModal("Hapus Semua Pemetaan Ruang?", "Tindakan ini akan mengosongkan status alokasi ruang pada seluruh kartu siswa.", () => {
+                allocatedRooms = [];
+                rawStudents.forEach(s => {
+                    s.room = '';
+                    s.seatNo = '';
+                });
+                renderAutoPairingResults([], 0);
+                renderStudentTable();
+                saveStudentsToCloud();
+                saveAllocatedRoomsToCloud();
+                showToast("Semua alokasi pemetaan ruangan berhasil dihapus!");
+            });
+        }
+
+        function deleteSingleAllocatedRoom(roomNum) {
+            const rmIdx = allocatedRooms.findIndex(r => r.roomNum === roomNum);
+            if (rmIdx === -1) return;
+
+            openConfirmModal(`Hapus Ruang ${String(roomNum).padStart(2,'0')}?`, `Hanya melepaskan alokasi bangku di Ruang ${roomNum}.`, () => {
+                const targetRoom = allocatedRooms[rmIdx];
+                targetRoom.seats.forEach(s => {
+                    const masterObj = rawStudents.find(m => m.id === s.id);
+                    if (masterObj) {
+                        masterObj.room = '';
+                        masterObj.seatNo = '';
+                    }
+                });
+
+                allocatedRooms.splice(rmIdx, 1);
+                
+                const breakdownLog = allocatedRooms.map(r => `${r.roomName}: [Pasangan ${r.pairName}] = ${r.seats.length} Siswa`);
+                const totalPlaced = rawStudents.filter(s => s.room && s.room !== '').length;
+                
+                renderAutoPairingResults(breakdownLog, totalPlaced);
+                renderStudentTable();
+                saveStudentsToCloud();
+                saveAllocatedRoomsToCloud();
+                showToast(`Ruang ${String(roomNum).padStart(2,'0')} berhasil dihapus!`);
+            });
+        }
+
+        function renderAutoPairingResults(breakdownLog = [], totalPlaced = 0) {
+            const container = document.getElementById('auto-room-allocation-results');
+            const badge = document.getElementById('auto-room-count-badge');
+            const summaryContainer = document.getElementById('summary-breakdown-lines');
+            const totalPlacedBadge = document.getElementById('summary-total-placed');
+
+            if (totalPlacedBadge) totalPlacedBadge.innerText = `${totalPlaced} Siswa Dialokasikan`;
+            if (badge) badge.innerText = allocatedRooms.length > 0 ? `${allocatedRooms.length} Ruangan Terisi` : "Belum dipetakan";
+
+            if (summaryContainer) {
+                if (breakdownLog.length === 0) {
+                    summaryContainer.innerHTML = `<div class="text-slate-400 italic">Belum ada rincian alokasi. Klik tombol "Jalankan Pemetaan Otomatis Semua Ruang".</div>`;
+                } else {
+                    summaryContainer.innerHTML = breakdownLog.map(line => `<div class="hover:text-amber-300 transition">• ${line}</div>`).join('');
+                }
+            }
+
+            if (!container) return;
+
+            if (allocatedRooms.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+                        <i class="fa-solid fa-layer-group text-4xl mb-2 block"></i>
+                        Belum ada pemetaan ruang. Klik <strong>"Jalankan Pemetaan Otomatis All Ruang"</strong>.
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            allocatedRooms.forEach(room => {
+                const countMap = {};
+                room.seats.forEach(s => {
+                    countMap[s.class] = (countMap[s.class] || 0) + 1;
+                });
+
+                const classSummaryStr = Object.keys(countMap).map(c => `Kls ${c}: ${countMap[c]}`).join(' | ');
+
+                html += `
+                    <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:border-indigo-300 transition space-y-3 relative group">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs">
+                                    ${String(room.roomNum).padStart(2,'0')}
+                                </span>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm">${room.roomName}</h4>
+                                    <span class="text-[10px] text-slate-500 font-semibold">Pasangan: ${room.pairName}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                    ${room.seats.length} Siswa
+                                </span>
+                                <button onclick="window.deleteSingleAllocatedRoom(${room.roomNum})" class="text-xs text-red-500 hover:text-red-700 p-1 font-bold rounded" title="Hapus Ruangan Ini">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-2 bg-slate-50 text-slate-700 rounded text-[11px] font-semibold text-center">
+                            ${classSummaryStr}
+                        </div>
+
+                        <div class="text-[11px] text-slate-500 font-mono space-y-0.5">
+                            <div>Bangku: ${room.seats[0].seatNo} s/d ${room.seats[room.seats.length - 1].seatNo}</div>
+                            <div>No. Ujian: ${room.seats[0].examNo} ... ${room.seats[room.seats.length - 1].examNo}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- DATA MANAGEMENT & MODALS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetEl = document.getElementById(tabId);
+            if (targetEl) targetEl.classList.remove('hidden');
+
+            const tabKeys = ['setup', 'shuffle', 'preview-cards', 'preview-desk', 'preview-roster', 'preview-recap'];
+            tabKeys.forEach(t => {
+                const btn = document.getElementById(`nav-tab-${t}`);
+                if (btn) {
+                    if (`tab-${t}` === tabId) {
+                        btn.className = "px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow font-bold whitespace-nowrap";
+                    } else {
+                        btn.className = "px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap";
+                    }
+                }
+            });
+
+            if (tabId === 'tab-preview-cards') {
+                populateFilterSelect('card-room-filter');
+                renderCardsPreview();
+            } else if (tabId === 'tab-preview-desk') {
+                populateFilterSelect('desk-room-filter');
+                renderDeskPreview();
+            } else if (tabId === 'tab-preview-roster') {
+                populateFilterSelect('roster-room-filter');
+                renderRosterPreview();
+            } else if (tabId === 'tab-preview-recap') {
+                renderRecapPreview();
+            }
+        }
+
+        function populateFilterSelect(selectId) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+
+            let currentVal = select.value || 'ALL';
+            let html = '<option value="ALL">Semua Ruangan</option>';
+            allocatedRooms.forEach(r => {
+                html += `<option value="${r.roomName}">${r.roomName} (${r.seats.length} Siswa)</option>`;
+            });
+            select.innerHTML = html;
+            select.value = currentVal;
+        }
+
+        function renderStudentTable() {
+            const tbody = document.getElementById('student-table-body');
+            const searchInput = document.getElementById('student-search-input');
+            const filterClassInput = document.getElementById('filter-class-select');
+            
+            if (!tbody) return;
+            const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const filterCls = filterClassInput ? filterClassInput.value : 'ALL';
+
+            const filtered = rawStudents.filter(s => {
+                const matchSearch = s.name.toLowerCase().includes(search) || 
+                                    (s.nis && s.nis.toLowerCase().includes(search)) || 
+                                    (s.nisn && s.nisn.toLowerCase().includes(search)) ||
+                                    (s.examNo && s.examNo.toLowerCase().includes(search)) ||
+                                    s.class.toLowerCase().includes(search);
+                const matchClass = filterCls === 'ALL' || s.class === filterCls;
+                return matchSearch && matchClass;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center py-12 text-slate-400">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                            Belum ada data siswa. Tambahkan melalui tombol <strong>"+ Tambah Siswa Baru"</strong>, <strong>"Import Excel"</strong>, atau <strong>"Paste Excel"</strong>.
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((s, idx) => {
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 text-center text-slate-400 font-mono">${idx + 1}</td>
+                        <td class="p-3 font-mono text-slate-700">${s.nis || '-'}</td>
+                        <td class="p-3 font-mono text-slate-500">${s.nisn || '-'}</td>
+                        <td class="p-3 font-semibold text-slate-900">${escapeHtml(s.name)}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                ${s.class}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center font-mono font-bold text-slate-800">
+                            ${String(s.classSeqNo || 1).padStart(2, '0')}
+                        </td>
+                        <td class="p-3 text-center font-mono text-xs font-bold text-cyan-900">
+                            ${s.examNo || '-'}
+                        </td>
+                        <td class="p-3 text-center font-semibold text-indigo-900">
+                            ${s.room ? `${s.room} / No. ${s.seatNo}` : '<span class="text-slate-400 font-normal">Belum dialokasi</span>'}
+                        </td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <button onclick="window.editStudent('${s.id}')" class="p-1.5 text-slate-500 hover:text-cyan-600 rounded">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="window.deleteStudent('${s.id}')" class="p-1.5 text-slate-500 hover:text-red-600 rounded">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function updateClassStats() {
+            const grid = document.getElementById('class-stats-grid');
+            const totalBadge = document.getElementById('total-student-badge');
+            
+            if (totalBadge) totalBadge.innerText = `Total: ${rawStudents.length} Siswa`;
+            if (!grid) return;
+
+            let html = '';
+            ALL_CLASSES.forEach(cls => {
+                const count = rawStudents.filter(s => s.class === cls).length;
+                html += `
+                    <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                        <div class="font-bold text-slate-700">${cls}</div>
+                        <div class="text-xs font-extrabold ${count > 0 ? 'text-cyan-700' : 'text-slate-400'}">${count} Siswa</div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function askClearAllStudents() {
+            if (rawStudents.length === 0) return;
+            openConfirmModal("Hapus Semua Data Siswa?", "Seluruh data siswa & hasil pemetaan akan dihapus permanen dari memori perangkat.", () => {
+                rawStudents = [];
+                allocatedRooms = [];
+                reindexAllStudents();
+                saveAllocatedRoomsToCloud();
+                renderStudentTable();
+                updateClassStats();
+                renderAutoPairingResults([], 0);
+                showToast("Semua data siswa berhasil dihapus.");
+            });
+        }
+
+        function deleteStudent(id) {
+            const target = rawStudents.find(s => s.id === id);
+            if (!target) return;
+            openConfirmModal(`Hapus Siswa "${target.name}"?`, `Data siswa akan dihapus dan abjad urutan kelas ${target.class} akan disesuaikan ulang.`, () => {
+                rawStudents = rawStudents.filter(s => s.id !== id);
+                reindexAllStudents();
+                renderStudentTable();
+                updateClassStats();
+                if (allocatedRooms.length > 0) executeAutoPairingAllocation();
+                showToast("Siswa berhasil dihapus!");
+            });
+        }
+
+        function exportToExcel() {
+            if (rawStudents.length === 0) {
+                showToast("Tidak ada data siswa untuk diexport!", "warning");
+                return;
+            }
+
+            const exportData = rawStudents.map((s, idx) => ({
+                "No": idx + 1,
+                "NIS": s.nis || '',
+                "NISN": s.nisn || '',
+                "Nama Siswa": s.name,
+                "Kelas": s.class,
+                "No. Urut Kelas": s.classSeqNo,
+                "No. Ujian": s.examNo || '',
+                "Ruang": s.room || 'Belum dialokasi',
+                "No Bangku": s.seatNo || 'Belum dialokasi'
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Master_Siswa");
+            XLSX.writeFile(workbook, "Data_Siswa_Ujian_SMPN3_Besuki.xlsx");
+            showToast("Berhasil mendownload file Excel!");
+        }
+
+        function openPasteModal() {
+            document.getElementById('paste-text-area').value = '';
+            document.getElementById('modal-paste').classList.remove('hidden');
+        }
+        function closePasteModal() {
+            document.getElementById('modal-paste').classList.add('hidden');
+        }
+
+        function processPastedData() {
+            const text = document.getElementById('paste-text-area').value.trim();
+            if (!text) return;
+
+            const lines = text.split('\n');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                let name = '';
+                let cls = '7A';
+                let nis = '';
+                let nisn = '';
+
+                if (line.includes('\t')) {
+                    const parts = line.split('\t').map(p => p.trim());
+                    name = parts[0] || '';
+                    cls = parts[1] || '7A';
+                    nis = parts[2] || '';
+                    nisn = parts[3] || '';
+                } else {
+                    const tokens = line.split(/\s+/);
+                    if (tokens.length >= 2) {
+                        const lastToken = tokens[tokens.length - 1].toUpperCase();
+                        if (ALL_CLASSES.includes(lastToken)) {
+                            cls = lastToken;
+                            name = tokens.slice(0, tokens.length - 1).join(' ');
+                        } else {
+                            name = line;
+                        }
+                    } else {
+                        name = line;
+                    }
+                }
+
+                cls = cls.toUpperCase();
+                if (name) {
+                    rawStudents.push({
+                        id: 'STU-' + Math.random().toString(36).substring(2, 9),
+                        name: name,
+                        class: cls,
+                        nis: nis,
+                        nisn: nisn
+                    });
+                    addedCount++;
+                }
+            });
+
+            closePasteModal();
+            reindexAllStudents();
+            renderStudentTable();
+            updateClassStats();
+            if (allocatedRooms.length > 0) executeAutoPairingAllocation();
+            showToast(`Berhasil mengimpor ${addedCount} data siswa & mengurutkan abjad A-Z!`);
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('modal-student-title').innerText = "+ Tambah Siswa Baru";
+            document.getElementById('edit-student-index').value = "-1";
+            document.getElementById('m-student-name').value = "";
+            document.getElementById('m-student-nis').value = "";
+            document.getElementById('m-student-nisn').value = "";
+            document.getElementById('modal-student').classList.remove('hidden');
+        }
+
+        function editStudent(id) {
+            const s = rawStudents.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('modal-student-title').innerText = "Edit Data Siswa";
+            document.getElementById('edit-student-index').value = id;
+            document.getElementById('m-student-name').value = s.name;
+            document.getElementById('m-student-class').value = s.class;
+            document.getElementById('m-student-nis').value = s.nis || "";
+            document.getElementById('m-student-nisn').value = s.nisn || "";
+            document.getElementById('modal-student').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('modal-student').classList.add('hidden');
+        }
+
+        function saveStudentModal() {
+            const id = document.getElementById('edit-student-index').value;
+            const name = document.getElementById('m-student-name').value.trim();
+            const cls = document.getElementById('m-student-class').value;
+            const nis = document.getElementById('m-student-nis').value.trim();
+            const nisn = document.getElementById('m-student-nisn').value.trim();
+
+            if (!name) {
+                showToast("Nama siswa wajib diisi!", "warning");
+                return;
+            }
+
+            if (id === "-1") {
+                rawStudents.push({
+                    id: 'STU-' + Math.random().toString(36).substring(2, 9),
+                    name: name,
+                    class: cls,
+                    nis: nis,
+                    nisn: nisn
+                });
+                showToast("Siswa berhasil ditambahkan & diurutkan abjad A-Z!");
+            } else {
+                const s = rawStudents.find(item => item.id === id);
+                if (s) {
+                    s.name = name;
+                    s.class = cls;
+                    s.nis = nis;
+                    s.nisn = nisn;
+                }
+                showToast("Data siswa diperbarui & abjad diurutkan ulang!");
+            }
+
+            closeStudentModal();
+            reindexAllStudents();
+            renderStudentTable();
+            updateClassStats();
+            if (allocatedRooms.length > 0) executeAutoPairingAllocation();
+        }
+
+        function importExcelFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheet];
+                    const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    let added = 0;
+                    json.forEach((row, idx) => {
+                        if (idx === 0 && (row[0] + '').toLowerCase().includes('nama')) return; 
+                        if (row.length > 0 && row[0]) {
+                            const name = (row[0] + '').trim();
+                            const cls = (row[1] || '7A').toString().trim().toUpperCase();
+                            const nis = row[2] ? (row[2] + '').trim() : '';
+                            const nisn = row[3] ? (row[3] + '').trim() : '';
+
+                            rawStudents.push({
+                                id: 'STU-' + Math.random().toString(36).substring(2, 9),
+                                name: name,
+                                class: cls,
+                                nis: nis,
+                                nisn: nisn
+                            });
+                            added++;
+                        }
+                    });
+
+                    reindexAllStudents();
+                    renderStudentTable();
+                    updateClassStats();
+                    if (allocatedRooms.length > 0) executeAutoPairingAllocation();
+                    showToast(`Berhasil mengimpor ${added} siswa dari file Excel!`);
+                } catch (err) {
+                    showToast("Gagal membaca file Excel/CSV.", "danger");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // --- REUSABLE CONFIRMATION MODAL ---
+        let currentConfirmAction = null;
+        function openConfirmModal(title, message, onConfirm) {
+            document.getElementById('confirm-modal-title').innerText = title;
+            document.getElementById('confirm-modal-message').innerText = message;
+            currentConfirmAction = onConfirm;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+            currentConfirmAction = null;
+        }
+
+        document.getElementById('confirm-modal-action-btn')?.addEventListener('click', () => {
+            if (currentConfirmAction) currentConfirmAction();
+            closeConfirmModal();
+        });
+
+        // --- PRINTING PREVIEWS GENERATORS ---
+        function getHeaderConfig() {
+            return {
+                gov1: document.getElementById('cfg-gov1')?.value || 'PEMERINTAH KABUPATEN SITUBONDO',
+                gov2: document.getElementById('cfg-gov2')?.value || 'DINAS PENDIDIKAN DAN KEBUDAYAAN',
+                school: document.getElementById('cfg-school')?.value || 'SMP NEGERI 3 BESUKI',
+                address: document.getElementById('cfg-address')?.value || 'Jl. Olahraga No. 12 Besuki, Kab. Situbondo - Jawa Timur',
+                examName: document.getElementById('cfg-exam-name')?.value || 'ASESMEN SUMATIF AKHIR SEMESTER (ASAS) GANJIL',
+                tapel: document.getElementById('cfg-tapel')?.value || '2026/2027',
+                semester: document.getElementById('cfg-semester')?.value || 'Ganjil',
+                date: document.getElementById('cfg-date')?.value || 'Besuki, 1 Desember 2026',
+                principal: document.getElementById('cfg-principal')?.value || 'Drs. Tubias Sugiarto',
+                nip: document.getElementById('cfg-nip')?.value || '196712061997031003',
+                committee: document.getElementById('cfg-committee')?.value || 'Ketua Panitia ASAS Ganjil'
+            };
+        }
+
+        // --- RENDER CARDS PREVIEW (TAB 3 - STEMPEL JUMBO OVERLAP & KETEBALAN SANGAT TEGAS) ---
+        function renderCardsPreview() {
+            const container = document.getElementById('cards-preview-container');
+            const roomFilter = document.getElementById('card-room-filter')?.value || 'ALL';
+            const cfg = getHeaderConfig();
+
+            let targetRooms = allocatedRooms;
+            if (roomFilter !== 'ALL') {
+                targetRooms = allocatedRooms.filter(r => r.roomName === roomFilter);
+            }
+
+            let allSeats = [];
+            targetRooms.forEach(r => allSeats.push(...r.seats));
+
+            if (allSeats.length === 0) {
+                container.innerHTML = getEmptyPreviewHTML("Kartu Ujian");
+                return;
+            }
+
+            const pageSize = 6;
+            const pages = [];
+            for (let i = 0; i < allSeats.length; i += pageSize) {
+                pages.push(allSeats.slice(i, i + pageSize));
+            }
+
+            const logoLeftSrc = customLogoLeftBase64 || getPemkabLogoSvg();
+            const logoRightSrc = customLogoRightBase64 || getSchoolLogoSvg();
+
+            let html = '';
+            pages.forEach((pageSeats) => {
+                html += `<div class="bg-white p-4 mb-6 shadow-md rounded-lg card-grid page-break min-h-[280mm] max-w-[210mm] mx-auto border grid grid-cols-2 gap-3">`;
+                pageSeats.forEach(stu => {
+                    html += `
+                        <div class="bg-white text-slate-900 flex flex-col justify-between p-3 rounded-none relative overflow-hidden font-serif aspect-square shadow-sm mx-auto w-full box-border" style="max-width: 95mm; max-height: 90mm; height: 90mm; border: 2px solid #000;">
+                            
+                            <!-- Header Logo Kiri Kanan -->
+                            <div class="flex items-center justify-between pb-1 mb-1" style="border-bottom: 3px double #000;">
+                                <img src="${logoLeftSrc}" class="w-11 h-11 object-contain" alt="Logo Pemkab">
+                                <div class="text-center flex-grow font-serif leading-tight px-1">
+                                    <div class="text-[11px] uppercase font-bold tracking-tight text-black">${cfg.school}</div>
+                                    <div class="text-[10px] uppercase font-bold tracking-tight text-black">KARTU PESERTA UJIAN</div>
+                                    <div class="text-[9px] uppercase font-bold tracking-tight text-black">TAHUN PELAJARAN ${cfg.tapel}</div>
+                                </div>
+                                <img src="${logoRightSrc}" class="w-11 h-11 object-contain" alt="Logo Sekolah">
+                            </div>
+
+                            <div class="text-center font-bold text-[10px] uppercase tracking-wide mb-1 font-serif text-black border-b border-slate-200 pb-0.5">
+                                ${cfg.examName}
+                            </div>
+
+                            <table class="w-full text-[10.5px] leading-snug font-serif text-black border-collapse my-auto">
+                                <tbody>
+                                    <tr>
+                                        <td class="w-24 font-semibold py-0.5 whitespace-nowrap">Nama</td>
+                                        <td class="w-3 text-center font-bold py-0.5">:</td>
+                                        <td class="font-bold uppercase py-0.5 tracking-tight">${escapeHtml(stu.name)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-24 font-semibold py-0.5 whitespace-nowrap">Kelas</td>
+                                        <td class="w-3 text-center font-bold py-0.5">:</td>
+                                        <td class="font-bold py-0.5">${stu.class} (No. ${String(stu.classSeqNo).padStart(2,'0')})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-24 font-semibold py-0.5 whitespace-nowrap">Nomor Ujian</td>
+                                        <td class="w-3 text-center font-bold py-0.5">:</td>
+                                        <td class="font-bold font-mono py-0.5 text-slate-900">${stu.examNo}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-24 font-semibold py-0.5 whitespace-nowrap">Ruang</td>
+                                        <td class="w-3 text-center font-bold py-0.5">:</td>
+                                        <td class="font-bold py-0.5">${stu.room}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Footer Tanda Tangan & Stempel Super Jumbo (Stempel Menindih TTD) -->
+                            <div class="flex items-end justify-between pt-1 border-t border-slate-300 font-serif mt-auto">
+                                <div class="w-1/2 pr-1">
+                                    <div class="text-[8px] font-bold uppercase leading-tight text-black">
+                                        NB : KARTU UJIAN WAJIB DIBAWA SELAMA UJIAN BERLANGSUNG!!!
+                                    </div>
+                                </div>
+                                <div class="w-1/2 text-center text-[9.5px] leading-tight text-black relative">
+                                    <div>Kepala Sekolah</div>
+                                    <div>${cfg.date}</div>
+                                    
+                                    <div class="h-20 relative flex items-center justify-center my-0.5">
+                                        ${customStempelBase64 ? `<img src="${customStempelBase64}" class="h-28 w-auto object-contain opacity-95 absolute -left-4 -top-3 z-20 pointer-events-none thick-stamp-filter" alt="Stempel">` : ''}
+                                        ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-20 w-auto object-contain opacity-100 relative z-10 pointer-events-none thick-sig-filter" alt="TTD">` : ''}
+                                    </div>
+
+                                    <div class="font-bold underline uppercase text-[9.5px]">${cfg.principal}</div>
+                                    <div class="text-[10.5px] font-bold">NIP. ${cfg.nip}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- RENDER DESK PREVIEW (TAB 4 - ENLARGED LOGO & CENTERED HEADER) ---
+        function renderDeskPreview() {
+            const container = document.getElementById('desk-preview-container');
+            const roomFilter = document.getElementById('desk-room-filter')?.value || 'ALL';
+            const cfg = getHeaderConfig();
+
+            let targetRooms = allocatedRooms;
+            if (roomFilter !== 'ALL') {
+                targetRooms = allocatedRooms.filter(r => r.roomName === roomFilter);
+            }
+
+            let allSeats = [];
+            targetRooms.forEach(r => allSeats.push(...r.seats));
+
+            if (allSeats.length === 0) {
+                container.innerHTML = getEmptyPreviewHTML("Label Nomor Bangku");
+                return;
+            }
+
+            const pageSize = 20;
+            const pages = [];
+            for (let i = 0; i < allSeats.length; i += pageSize) {
+                pages.push(allSeats.slice(i, i + pageSize));
+            }
+
+            const logoSrc = customLogoRightBase64 ? customLogoRightBase64 : getSchoolLogoSvg();
+
+            let html = '';
+            pages.forEach((pageSeats) => {
+                html += `<div class="bg-white p-4 mb-6 shadow-md rounded-lg desk-3x4-grid page-break min-h-[280mm] max-w-[210mm] mx-auto border">`;
+                pageSeats.forEach(stu => {
+                    html += `
+                        <div class="border-2 border-slate-900 p-2 rounded-lg bg-white text-slate-900 flex flex-col justify-between text-center relative overflow-hidden" style="height: 48mm; width: 44mm; box-sizing: border-box; margin: auto;">
+                            
+                            <!-- Header Logo & Nama Sekolah Rata Tengah Presisi -->
+                            <div class="flex items-center justify-center relative border-b border-slate-900 pb-1.5 min-h-[26px]">
+                                <img src="${logoSrc}" class="w-7 h-7 object-contain absolute left-0" alt="Logo">
+                                <span class="text-[10.5px] font-extrabold uppercase font-kop text-center w-full px-6 leading-tight text-slate-900">${cfg.school}</span>
+                            </div>
+
+                            <!-- Teks Tengah Diperbesar -->
+                            <div class="my-auto py-0.5 space-y-0.5">
+                                <div class="text-[10px] font-extrabold text-slate-600 uppercase tracking-wide leading-none">${stu.room}</div>
+                                <div class="text-3xl font-black font-mono tracking-tight text-slate-900 leading-none py-1">
+                                    ${stu.seatNo}
+                                </div>
+                                <div class="text-[11px] font-extrabold uppercase text-slate-900 truncate leading-tight px-0.5">${escapeHtml(stu.name)}</div>
+                                <div class="text-[10px] font-bold text-slate-700 leading-tight">Kelas: <strong class="text-slate-900 font-extrabold">${stu.class}</strong></div>
+                            </div>
+
+                            <!-- Footer Nomor Ujian -->
+                            <div class="text-[9.5px] font-bold font-mono text-cyan-950 border-t border-slate-900 pt-0.5 bg-slate-50 -mx-2 -mb-2 pb-1">
+                                No. Ujian: ${stu.examNo}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- RENDER ROSTER PREVIEW (TAB 5 - STEMPEL SUPER JUMBO MENINDIH TTD KEPSEK) ---
+        function renderRosterPreview() {
+            const container = document.getElementById('roster-preview-container');
+            const roomFilter = document.getElementById('roster-room-filter')?.value || 'ALL';
+            const cfg = getHeaderConfig();
+
+            let targetRooms = allocatedRooms;
+            if (roomFilter !== 'ALL') {
+                targetRooms = allocatedRooms.filter(r => r.roomName === roomFilter);
+            }
+
+            if (targetRooms.length === 0) {
+                container.innerHTML = getEmptyPreviewHTML("Daftar Peserta Per Ruang");
+                return;
+            }
+
+            const logoLeftSrc = customLogoLeftBase64 ? customLogoLeftBase64 : getPemkabLogoSvg();
+            const logoRightSrc = customLogoRightBase64 ? customLogoRightBase64 : getSchoolLogoSvg();
+            let html = '';
+
+            targetRooms.forEach(room => {
+                const sortedSeats = [...room.seats].sort((a, b) => {
+                    if (a.class !== b.class) return a.class.localeCompare(b.class);
+                    return a.name.localeCompare(b.name);
+                });
+
+                html += `
+                    <div class="bg-white p-6 sm:p-8 mb-6 shadow-md rounded-lg page-break min-h-[280mm] max-w-[210mm] mx-auto border font-serif text-[12pt] leading-snug" style="font-family: 'Times New Roman', Times, serif;">
+                        
+                        <!-- Kop Surat Sekolah -->
+                        <div class="flex items-center gap-4 border-b-4 border-black pb-2 mb-3">
+                            <img src="${logoLeftSrc}" class="w-20 h-20 object-contain" alt="Logo Pemkab">
+                            <div class="text-center flex-grow font-kop">
+                                <div class="text-xs uppercase font-bold tracking-tight">${cfg.gov1}</div>
+                                <div class="text-xs uppercase font-bold tracking-tight">${cfg.gov2}</div>
+                                <div class="text-lg uppercase font-extrabold tracking-tight">${cfg.school}</div>
+                                <div class="text-xs text-slate-600 font-sans">${cfg.address}</div>
+                            </div>
+                            <img src="${logoRightSrc}" class="w-20 h-20 object-contain" alt="Logo Sekolah">
+                        </div>
+
+                        <div class="text-center font-bold text-sm uppercase mb-3 space-y-0.5">
+                            <div class="text-base font-extrabold">DAFTAR PESERTA ${cfg.examName}</div>
+                            <div class="text-xs font-semibold">TAHUN PELAJARAN ${cfg.tapel}</div>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-3 text-xs md:text-sm font-bold border border-black p-2 bg-slate-50">
+                            <div>RUANGAN : <span class="text-cyan-900 text-sm font-extrabold">${room.roomName}</span></div>
+                            <div>JUMLAH PESERTA : <span class="font-extrabold">${sortedSeats.length} Siswa</span></div>
+                        </div>
+
+                        <table class="w-full border-collapse border-2 border-black text-[11pt] mb-4">
+                            <thead>
+                                <tr class="bg-slate-100 text-center font-bold border-b-2 border-black">
+                                    <th class="border border-black py-1.5 px-1 w-[8%]">NO</th>
+                                    <th class="border border-black py-1.5 px-1 w-[14%]">BANGKU</th>
+                                    <th class="border border-black py-1.5 px-1 w-[22%]">NO. UJIAN</th>
+                                    <th class="border border-black py-1.5 px-3 text-left">NAMA LENGKAP SISWA</th>
+                                    <th class="border border-black py-1.5 px-1 w-[12%]">KELAS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                sortedSeats.forEach((stu, sIdx) => {
+                    html += `
+                        <tr class="text-center hover:bg-slate-50">
+                            <td class="border border-black py-1 px-1 font-mono text-[10.5pt]">${sIdx + 1}</td>
+                            <td class="border border-black py-1 px-1 font-bold font-mono text-[11pt]">${stu.seatNo}</td>
+                            <td class="border border-black py-1 px-1 font-mono font-bold text-[11pt]">${stu.examNo}</td>
+                            <td class="border border-black py-1 px-3 text-left font-semibold text-[11pt] uppercase">${escapeHtml(stu.name)}</td>
+                            <td class="border border-black py-1 px-1 font-bold text-[11pt]">${stu.class}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+
+                        <!-- Area Tanda Tangan & Stempel Super Jumbo Persuratan Dinas (Menindih TTD) -->
+                        <div class="flex items-end justify-between pt-2 text-xs md:text-sm font-serif break-inside-avoid">
+                            <div class="w-1/2 text-center">
+                                <p class="mb-0.5">Mengetahui,</p>
+                                <p class="font-bold">${cfg.committee}</p>
+                                <div class="h-36"></div>
+                                <p class="font-bold underline">( .................................................... )</p>
+                                <p class="text-[10px]">NIP. -</p>
+                            </div>
+                            <div class="w-1/2 text-center">
+                                <p class="mb-0.5">${cfg.date}</p>
+                                <p class="font-bold">Kepala Sekolah,</p>
+                                
+                                <div class="h-36 relative flex items-center justify-center my-1">
+                                    ${customStempelBase64 ? `<img src="${customStempelBase64}" class="h-48 w-auto object-contain opacity-95 absolute -left-4 -top-6 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                                    ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-36 w-auto object-contain opacity-100 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
+                                </div>
+
+                                <p class="font-bold underline uppercase text-xs md:text-sm">${cfg.principal}</p>
+                                <p class="text-xs md:text-sm font-semibold mt-0.5">NIP. ${cfg.nip}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- RENDER RECAP PREVIEW (TAB 6 - STEMPEL SUPER JUMBO MENINDIH TTD KEPSEK) ---
+        function renderRecapPreview() {
+            const container = document.getElementById('recap-preview-container');
+            const cfg = getHeaderConfig();
+
+            if (allocatedRooms.length === 0) {
+                container.innerHTML = getEmptyPreviewHTML("Rekapitulasi Peserta Ruang & Kelas");
+                return;
+            }
+
+            const logoLeftSrc = customLogoLeftBase64 ? customLogoLeftBase64 : getPemkabLogoSvg();
+            const logoRightSrc = customLogoRightBase64 ? customLogoRightBase64 : getSchoolLogoSvg();
+
+            const classTotalSummary = {};
+            ALL_CLASSES.forEach(c => classTotalSummary[c] = 0);
+
+            let totalOverallAllRooms = 0;
+            let tableRowsHtml = '';
+
+            allocatedRooms.forEach((room, index) => {
+                const countPerClassMap = {};
+                room.seats.forEach(stu => {
+                    countPerClassMap[stu.class] = (countPerClassMap[stu.class] || 0) + 1;
+                    classTotalSummary[stu.class] = (classTotalSummary[stu.class] || 0) + 1;
+                });
+
+                const classBreakdownTableHtml = `
+                    <table class="text-[10.5pt] border-none mx-auto text-left leading-snug" style="border-collapse: collapse;">
+                        ${Object.keys(countPerClassMap).map(cls => `
+                            <tr>
+                                <td class="py-0.5 pr-3 font-semibold whitespace-nowrap">Kelas ${cls}</td>
+                                <td class="py-0.5 px-1 font-bold text-center">:</td>
+                                <td class="py-0.5 pl-3 font-bold">${countPerClassMap[cls]} Siswa</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `;
+
+                const roomTotal = room.seats.length;
+                totalOverallAllRooms += roomTotal;
+                const firstSeat = room.seats[0]?.seatNo || '01';
+                const lastSeat = room.seats[room.seats.length - 1]?.seatNo || String(roomTotal).padStart(2, '0');
+
+                tableRowsHtml += `
+                    <tr class="text-center hover:bg-slate-50">
+                        <td class="border border-black py-2 px-1 font-mono">${index + 1}</td>
+                        <td class="border border-black py-2 px-2 font-bold">${room.roomName}</td>
+                        <td class="border border-black py-2 px-2 font-bold">${room.pairName}</td>
+                        <td class="border border-black py-2 px-4 text-center">${classBreakdownTableHtml}</td>
+                        <td class="border border-black py-2 px-2 font-bold text-sm">${roomTotal}</td>
+                        <td class="border border-black py-2 px-2 font-mono text-xs">No. ${firstSeat} s/d ${lastSeat}</td>
+                    </tr>
+                `;
+            });
+
+            const activeClasses = ALL_CLASSES.filter(c => classTotalSummary[c] > 0);
+            let classGridHtml = '';
+            activeClasses.forEach(c => {
+                classGridHtml += `
+                    <div class="border border-black p-2 text-center rounded bg-slate-50">
+                        <div class="font-bold text-xs">Kelas ${c}</div>
+                        <div class="text-base font-extrabold text-blue-950">${classTotalSummary[c]} Siswa</div>
+                    </div>
+                `;
+            });
+
+            let html = `
+                <div class="bg-white p-6 sm:p-8 mb-6 shadow-md rounded-lg page-break min-h-[280mm] max-w-[210mm] mx-auto border font-serif text-[12pt] leading-snug" style="font-family: 'Times New Roman', Times, serif;">
+                    
+                    <!-- Kop Surat Sekolah -->
+                    <div class="flex items-center gap-4 border-b-4 border-black pb-2 mb-3">
+                        <img src="${logoLeftSrc}" class="w-20 h-20 object-contain" alt="Logo Pemkab">
+                        <div class="text-center flex-grow font-kop">
+                            <div class="text-xs uppercase font-bold tracking-tight">${cfg.gov1}</div>
+                            <div class="text-xs uppercase font-bold tracking-tight">${cfg.gov2}</div>
+                            <div class="text-lg uppercase font-extrabold tracking-tight">${cfg.school}</div>
+                            <div class="text-xs text-slate-600 font-sans">${cfg.address}</div>
+                        </div>
+                        <img src="${logoRightSrc}" class="w-20 h-20 object-contain" alt="Logo Sekolah">
+                    </div>
+
+                    <!-- Judul Rekap -->
+                    <div class="text-center font-bold text-sm uppercase mb-4 space-y-0.5">
+                        <div class="text-base font-extrabold">REKAPITULASI PESERTA RUANG DAN KELAS</div>
+                        <div class="text-sm font-bold">${cfg.examName}</div>
+                        <div class="text-xs font-semibold">TAHUN PELAJARAN ${cfg.tapel}</div>
+                    </div>
+
+                    <!-- Tabel Utama Rekapitulasi -->
+                    <table class="w-full border-collapse border-2 border-black text-[11pt] mb-5">
+                        <thead>
+                            <tr class="bg-slate-100 text-center font-bold border-b-2 border-black">
+                                <th class="border border-black py-2 px-1 w-[7%]">NO</th>
+                                <th class="border border-black py-2 px-2 w-[16%]">RUANGAN</th>
+                                <th class="border border-black py-2 px-2 w-[18%]">PASANGAN</th>
+                                <th class="border border-black py-2 px-3 text-center">DISTRIBUSI PESERTA PER KELAS</th>
+                                <th class="border border-black py-2 px-2 w-[14%]">JUMLAH</th>
+                                <th class="border border-black py-2 px-2 w-[18%]">KETERANGAN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRowsHtml}
+                            <tr class="bg-slate-100 font-bold text-center border-t-2 border-black">
+                                <td colspan="4" class="border border-black py-2 px-3 text-right uppercase">TOTAL KESELURUHAN PESERTA UJIAN:</td>
+                                <td class="border border-black py-2 px-2 text-base font-black">${totalOverallAllRooms}</td>
+                                <td class="border border-black py-2 px-2 text-xs font-semibold">${allocatedRooms.length} Ruangan</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Sub Ringkasan Jumlah Total Siswa Per Kelas -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-xs uppercase mb-2 text-black border-b border-black pb-1">RINGKASAN TOTAL SISWA PER KELAS:</h4>
+                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                            ${classGridHtml}
+                        </div>
+                    </div>
+
+                    <!-- Area Tanda Tangan & Stempel Super Jumbo Persuratan Dinas (Menindih TTD) -->
+                    <div class="flex items-end justify-between pt-2 text-xs md:text-sm font-serif break-inside-avoid">
+                        <div class="w-1/2 text-center">
+                            <p class="mb-0.5">Mengetahui,</p>
+                            <p class="font-bold">${cfg.committee}</p>
+                            <div class="h-36"></div>
+                            <p class="font-bold underline">( .................................................... )</p>
+                            <p class="text-[10px]">NIP. -</p>
+                        </div>
+                        <div class="w-1/2 text-center">
+                            <p class="mb-0.5">${cfg.date}</p>
+                            <p class="font-bold">Kepala Sekolah,</p>
+                            
+                            <div class="h-36 relative flex items-center justify-center my-1">
+                                ${customStempelBase64 ? `<img src="${customStempelBase64}" class="h-48 w-auto object-contain opacity-95 absolute -left-4 -top-6 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                                ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-36 w-auto object-contain opacity-100 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
+                            </div>
+
+                            <p class="font-bold underline uppercase text-xs md:text-sm">${cfg.principal}</p>
+                            <p class="text-xs md:text-sm font-semibold mt-0.5">NIP. ${cfg.nip}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // --- HELPER FUNCTIONS & IMAGE HANDLERS ---
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-600' : type === 'warning' ? 'bg-amber-600' : type === 'danger' ? 'bg-red-600' : 'bg-slate-700';
+            toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function getEmptyPreviewHTML(title) {
+            return `
+                <div class="col-span-full text-center py-24 bg-white border-2 border-dashed border-slate-300 rounded-2xl text-slate-400">
+                    <i class="fa-solid fa-file-circle-exclamation text-5xl mb-3 text-slate-300"></i>
+                    <h4 class="text-base font-bold text-slate-600 mb-1">Belum Ada Data Untuk ${title}</h4>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto">
+                        Silakan masukkan data siswa di menu <strong>"1. Data & Kop"</strong> dan terapkan pemetaan di <strong>"2. Pemetaan Ruang & Pasangan"</strong>.
+                    </p>
+                </div>
+            `;
+        }
+
+        function triggerPrint(type) {
+            if (rawStudents.length === 0 || allocatedRooms.length === 0) {
+                showToast("Belum ada data siswa atau ruangan untuk dicetak!", "warning");
+                return;
+            }
+
+            if (type === 'cards') { switchTab('tab-preview-cards'); renderCardsPreview(); }
+            else if (type === 'desk') { switchTab('tab-preview-desk'); renderDeskPreview(); }
+            else if (type === 'roster') { switchTab('tab-preview-roster'); renderRosterPreview(); }
+            else if (type === 'recap') { switchTab('tab-preview-recap'); renderRecapPreview(); }
+
+            showToast("Menyiapkan dokumen cetak...", "info");
+            setTimeout(() => {
+                try { window.print(); } catch (err) { printInNewWindow(type); }
+            }, 200);
+        }
+
+        function printInNewWindow(type) {
+            let containerId = 'cards-preview-container';
+            let title = 'Kartu Ujian - SMPN 3 Besuki';
+            if (type === 'desk') { containerId = 'desk-preview-container'; title = 'Nomor Bangku - SMPN 3 Besuki'; }
+            else if (type === 'roster') { containerId = 'roster-preview-container'; title = 'Daftar Peserta Ruang - SMPN 3 Besuki'; }
+            else if (type === 'recap') { containerId = 'recap-preview-container'; title = 'Rekapitulasi Peserta - SMPN 3 Besuki'; }
+
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const printWin = window.open('', '_blank');
+            if (!printWin) { showToast("Pop-up diblokir browser. Silakan izinkan pop-up.", "warning"); return; }
+
+            printWin.document.write(`
+                <!DOCTYPE html>
+                <html lang="id">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${title}</title>
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <style>
+                        @media print {
+                            body { background: white !important; margin: 0 !important; padding: 0 !important; font-size: 11pt !important; font-family: 'Times New Roman', Times, serif !important; }
+                            .page-break { page-break-after: always !important; break-after: page !important; }
+                            .card-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 5mm 6mm !important; }
+                            .desk-3x4-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 3mm !important; }
+                        }
+                        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 6mm; }
+                        .desk-3x4-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+                        .thick-stamp-filter { filter: contrast(160%) brightness(75%) drop-shadow(0px 0px 0.7px #000); }
+                        .thick-sig-filter { filter: contrast(160%) brightness(70%) drop-shadow(0px 0px 0.7px #000); }
+                    </style>
+                </head>
+                <body onload="setTimeout(function(){ window.print(); }, 200);" class="p-4 bg-white font-serif">
+                    ${container.innerHTML}
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+
+        function resetConfigToDefault() {
+            document.getElementById('cfg-gov1').value = "PEMERINTAH KABUPATEN SITUBONDO";
+            document.getElementById('cfg-gov2').value = "DINAS PENDIDIKAN DAN KEBUDAYAAN";
+            document.getElementById('cfg-school').value = "SMP NEGERI 3 BESUKI";
+            document.getElementById('cfg-address').value = "Jl. Olahraga No. 12 Besuki, Kab. Situbondo - Jawa Timur";
+            document.getElementById('cfg-exam-name').value = "ASESMEN SUMATIF AKHIR SEMESTER (ASAS) GANJIL";
+            document.getElementById('cfg-tapel').value = "2026/2027";
+            document.getElementById('cfg-semester').value = "Ganjil";
+            document.getElementById('cfg-date').value = "Besuki, 1 Desember 2026";
+            document.getElementById('cfg-principal').value = "Drs. Tubias Sugiarto";
+            document.getElementById('cfg-nip').value = "196712061997031003";
+            document.getElementById('cfg-committee').value = "Ketua Panitia ASAS Ganjil";
+            saveHeaderConfigToCloud();
+            showToast("Pengaturan Kop dikembalikan ke default!");
+        }
+
+        function handleStempelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                customStempelBase64 = evt.target.result;
+                document.getElementById('custom-stempel-img').src = customStempelBase64;
+                document.getElementById('custom-stempel-img').classList.remove('hidden');
+                document.getElementById('default-stempel-icon').classList.add('hidden');
+                saveImagesToCloud();
+                showToast("Stempel Basah berhasil diunggah!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetStempel() {
+            customStempelBase64 = null;
+            document.getElementById('custom-stempel-img').src = '';
+            document.getElementById('custom-stempel-img').classList.add('hidden');
+            document.getElementById('default-stempel-icon').classList.remove('hidden');
+            saveImagesToCloud();
+            showToast("Stempel dihapus.");
+        }
+
+        function handleSignatureUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                customSignatureBase64 = evt.target.result;
+                document.getElementById('custom-signature-img').src = customSignatureBase64;
+                document.getElementById('custom-signature-img').classList.remove('hidden');
+                document.getElementById('default-signature-icon').classList.add('hidden');
+                saveImagesToCloud();
+                showToast("Tanda Tangan berhasil diunggah!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetSignature() {
+            customSignatureBase64 = null;
+            document.getElementById('custom-signature-img').src = '';
+            document.getElementById('custom-signature-img').classList.add('hidden');
+            document.getElementById('default-signature-icon').classList.remove('hidden');
+            saveImagesToCloud();
+            showToast("Tanda Tangan dihapus.");
+        }
+
+        function handleLogoLeftUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                customLogoLeftBase64 = evt.target.result;
+                document.getElementById('custom-logo-left-img').src = customLogoLeftBase64;
+                saveImagesToCloud();
+                showToast("Logo Kiri (Pemkab) diperbarui!");
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function resetLogoLeft() {
+            customLogoLeftBase64 = null;
+            document.getElementById('custom-logo-left-img').src = getPemkabLogoSvg();
+            saveImagesToCloud();
+            showToast("Logo Kiri dikembalikan ke default.");
+        }
+
+        function handleLogoRightUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                customLogoRightBase64 = evt.target.result;
+                document.getElementById('custom-logo-right-img').src = customLogoRightBase64;
+                saveImagesToCloud();
+                showToast("Logo Kanan diperbarui!");
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function resetLogoRight() {
+            customLogoRightBase64 = null;
+            document.getElementById('custom-logo-right-img').src = getSchoolLogoSvg();
+            saveImagesToCloud();
+            showToast("Logo Kanan dikembalikan ke default.");
+        }
+
+        function getPemkabLogoSvg() {
+            return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="#000">
+                    <path d="M50 5 L90 25 L90 75 L50 115 L10 75 L10 25 Z" stroke="#000" stroke-width="4" fill="none"/>
+                    <circle cx="50" cy="55" r="28" stroke="#000" stroke-width="3" fill="none"/>
+                    <polygon points="50,32 60,50 80,52 65,65 70,85 50,73 30,85 35,65 20,52 40,50" fill="#000"/>
+                </svg>
+            `);
+        }
+
+        function getSchoolLogoSvg() {
+            return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#000">
+                    <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" stroke="#000" stroke-width="4" fill="none"/>
+                    <circle cx="50" cy="50" r="22" stroke="#000" stroke-width="3" fill="none"/>
+                    <text x="50" y="55" font-size="16" font-weight="bold" text-anchor="middle" font-family="serif">SMP3</text>
+                </svg>
+            `);
+        }
+
+        // BIND FUNCTIONS TO WINDOW OBJECT
+        window.switchTab = switchTab;
+        window.renderStudentTable = renderStudentTable;
+        window.updateClassStats = updateClassStats;
+        window.askClearAllStudents = askClearAllStudents;
+        window.deleteStudent = deleteStudent;
+        window.exportToExcel = exportToExcel;
+        window.openPasteModal = openPasteModal;
+        window.closePasteModal = closePasteModal;
+        window.processPastedData = processPastedData;
+        window.openAddStudentModal = openAddStudentModal;
+        window.closeStudentModal = closeStudentModal;
+        window.saveStudentModal = saveStudentModal;
+        window.editStudent = editStudent;
+        window.importExcelFile = importExcelFile;
+        window.saveHeaderConfigToCloud = saveHeaderConfigToCloud;
+        window.saveHeaderConfigToStorage = saveHeaderConfigToCloud;
+        window.savePairingConfigToCloud = savePairingConfigToCloud;
+        window.savePairingConfigToStorage = savePairingConfigToCloud;
+        window.resetConfigToDefault = resetConfigToDefault;
+        window.handleStempelUpload = handleStempelUpload;
+        window.resetStempel = resetStempel;
+        window.handleSignatureUpload = handleSignatureUpload;
+        window.resetSignature = resetSignature;
+        window.handleLogoLeftUpload = handleLogoLeftUpload;
+        window.resetLogoLeft = resetLogoLeft;
+        window.handleLogoRightUpload = handleLogoRightUpload;
+        window.resetLogoRight = resetLogoRight;
+        window.addNewPairRow = addNewPairRow;
+        window.removePairRow = removePairRow;
+        window.updatePairRow = updatePairRow;
+        window.generateStandardPairs = generateStandardPairs;
+        window.addCustomRoomOverride = addCustomRoomOverride;
+        window.removeCustomRoomOverride = removeCustomRoomOverride;
+        window.updateRoomOverride = updateRoomOverride;
+        window.executeAutoPairingAllocation = executeAutoPairingAllocation;
+        window.clearAllAllocatedRooms = clearAllAllocatedRooms;
+        window.deleteSingleAllocatedRoom = deleteSingleAllocatedRoom;
+        window.renderCardsPreview = renderCardsPreview;
+        window.renderDeskPreview = renderDeskPreview;
+        window.renderRosterPreview = renderRosterPreview;
+        window.renderRecapPreview = renderRecapPreview;
+        window.triggerPrint = triggerPrint;
+        window.closeConfirmModal = closeConfirmModal;
+
+        // INITIALIZATION ON PAGE LOAD
+        window.onload = function() {
+            pairRules = [
+                { classA: '8A', classB: '9A' },
+                { classA: '8B', classB: '9B' },
+                { classA: '8C', classB: '9C' },
+                { classA: '8D', classB: '9D' },
+                { classA: '7A', classB: '7B' },
+                { classA: '7C', classB: '7D' }
+            ];
+
+            loadDataFromLocalStorage();
+            renderPairRulesUI();
+            renderCustomRoomOverridesUI();
+            renderStudentTable();
+            updateClassStats();
+
+            if (allocatedRooms.length > 0) {
+                const breakdownLog = allocatedRooms.map(r => `${r.roomName}: [Pasangan ${r.pairName}] = ${r.seats.length} Siswa`);
+                const totalPlaced = rawStudents.filter(s => s.room && s.room !== '').length;
+                renderAutoPairingResults(breakdownLog, totalPlaced);
+            }
+
+            initCloudStorage();
+        };
+    </script>
+</body>
+</html>
