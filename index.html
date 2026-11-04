@@ -2126,25 +2126,31 @@
                             </tbody>
                         </table>
 
-                        <div class="flex items-end justify-between pt-2 text-[12pt] font-serif break-inside-avoid">
-                            <div class="w-1/2 text-center">
-                                <p class="mb-0.5">Mengetahui,</p>
-                                <p class="font-bold">${cfg.committee}</p>
-                                <div class="h-32"></div>
-                                <p class="font-bold underline">( .................................................... )</p>
-                                <p class="text-[10pt]">NIP. -</p>
-                            </div>
-                            <div class="w-1/2 text-center">
-                                <p class="mb-0.5">${cfg.date}</p>
-                                <p class="font-bold">Kepala Sekolah,</p>
-                                
-                                <div class="h-32 relative flex items-center justify-center my-1">
-                                    ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-32 w-auto object-contain opacity-90 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
-                                    ${customStempelBase64 ? `<img src="${customStempelBase64}" class="w-40 h-40 object-contain opacity-80 absolute left-2 -top-4 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                        <div class="flex items-start justify-between pt-2 text-[12pt] font-serif break-inside-avoid">
+                            <div class="w-1/2 text-center flex flex-col justify-between">
+                                <div>
+                                    <p class="mb-0.5">Mengetahui,</p>
+                                    <p class="font-bold">${cfg.committee}</p>
                                 </div>
-
-                                <p class="relative z-30 font-bold underline uppercase text-[12pt]">${cfg.principal}</p>
-                                <p class="relative z-30 text-[11pt] font-bold mt-0.5">NIP. ${cfg.nip}</p>
+                                <div class="h-28 flex items-center justify-center my-1"></div>
+                                <div>
+                                    <p class="font-bold underline uppercase text-[12pt]">( .................................................... )</p>
+                                    <p class="text-[11pt] font-bold mt-0.5">NIP. -</p>
+                                </div>
+                            </div>
+                            <div class="w-1/2 text-center flex flex-col justify-between">
+                                <div>
+                                    <p class="mb-0.5">${cfg.date}</p>
+                                    <p class="font-bold">Kepala Sekolah,</p>
+                                </div>
+                                <div class="h-28 relative flex items-center justify-center my-1">
+                                    ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-28 w-auto object-contain opacity-90 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
+                                    ${customStempelBase64 ? `<img src="${customStempelBase64}" class="w-36 h-36 object-contain opacity-80 absolute left-2 -top-4 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                                </div>
+                                <div>
+                                    <p class="relative z-30 font-bold underline uppercase text-[12pt]">${cfg.principal}</p>
+                                    <p class="relative z-30 text-[11pt] font-bold mt-0.5">NIP. ${cfg.nip}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2268,25 +2274,31 @@
                         </div>
                     </div>
 
-                    <div class="flex items-end justify-between pt-2 text-[12pt] font-serif break-inside-avoid">
-                        <div class="w-1/2 text-center">
-                            <p class="mb-0.5">Mengetahui,</p>
-                            <p class="font-bold">${cfg.committee}</p>
-                            <div class="h-32"></div>
-                            <p class="font-bold underline">( .................................................... )</p>
-                            <p class="text-[10pt]">NIP. -</p>
-                        </div>
-                        <div class="w-1/2 text-center">
-                            <p class="mb-0.5">${cfg.date}</p>
-                            <p class="font-bold">Kepala Sekolah,</p>
-                            
-                            <div class="h-32 relative flex items-center justify-center my-1">
-                                ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-32 w-auto object-contain opacity-90 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
-                                ${customStempelBase64 ? `<img src="${customStempelBase64}" class="w-40 h-40 object-contain opacity-80 absolute left-2 -top-4 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                    <div class="flex items-start justify-between pt-2 text-[12pt] font-serif break-inside-avoid">
+                        <div class="w-1/2 text-center flex flex-col justify-between">
+                            <div>
+                                <p class="mb-0.5">Mengetahui,</p>
+                                <p class="font-bold">${cfg.committee}</p>
                             </div>
-
-                            <p class="relative z-30 font-bold underline uppercase text-[12pt]">${cfg.principal}</p>
-                            <p class="relative z-30 text-[11pt] font-bold mt-0.5">NIP. ${cfg.nip}</p>
+                            <div class="h-28 flex items-center justify-center my-1"></div>
+                            <div>
+                                <p class="font-bold underline uppercase text-[12pt]">( .................................................... )</p>
+                                <p class="text-[11pt] font-bold mt-0.5">NIP. -</p>
+                            </div>
+                        </div>
+                        <div class="w-1/2 text-center flex flex-col justify-between">
+                            <div>
+                                <p class="mb-0.5">${cfg.date}</p>
+                                <p class="font-bold">Kepala Sekolah,</p>
+                            </div>
+                            <div class="h-28 relative flex items-center justify-center my-1">
+                                ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="h-28 w-auto object-contain opacity-90 relative z-10 pointer-events-none thick-sig-filter" alt="TTD Kepsek">` : ''}
+                                ${customStempelBase64 ? `<img src="${customStempelBase64}" class="w-36 h-36 object-contain opacity-80 absolute left-2 -top-4 z-20 pointer-events-none thick-stamp-filter" alt="Stempel Basah">` : ''}
+                            </div>
+                            <div>
+                                <p class="relative z-30 font-bold underline uppercase text-[12pt]">${cfg.principal}</p>
+                                <p class="relative z-30 text-[11pt] font-bold mt-0.5">NIP. ${cfg.nip}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
