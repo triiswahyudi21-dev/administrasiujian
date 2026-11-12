@@ -3888,26 +3888,4 @@
         };
     </script>
 </body>
-</html>7D', classB: '8D' },
-                { classA: '9A', classB: '9B' },
-                { classA: '9C', classB: '9D' }
-            ];
-
-            loadDataFromLocalStorage();
-            renderPairRulesUI();
-            renderCustomRoomOverridesUI();
-            renderStudentTable();
-            updateClassStats();
-            renderRoomInventoryUI();
-
-            if (allocatedRooms.length > 0) {
-                const breakdownLog = allocatedRooms.map(r => `${r.roomName}: [Pasangan ${r.pairName}] = ${r.seats.length} Siswa`);
-                const totalPlaced = rawStudents.filter(s => s.room && s.room !== '').length;
-                renderAutoPairingResults(breakdownLog, totalPlaced);
-            }
-
-            initCloudStorage();
-        };
-    </script>
-</body>
 </html>
