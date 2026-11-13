@@ -127,6 +127,210 @@
             gap: 3mm;
         }
 
+        /* MEL ASAS: ukuran tabel dan jarak dibuat lega untuk pratinjau serta hasil cetak */
+
+        #tab-jadwal-asas .jadwal-asas-table { min-width: 760px; }
+        #tab-jadwal-asas .jadwal-asas-table th,
+        #tab-jadwal-asas .jadwal-asas-table td { border: 1px solid #475569; padding: 9px 10px; text-align: center; }
+        #tab-jadwal-asas .jadwal-asas-table th { background: #e2e8f0; font-weight: 800; font-size: 12px; letter-spacing: .04em; }
+        #tab-jadwal-asas .jadwal-asas-table td { font-size: 14px; }
+        #tab-jadwal-asas .jadwal-asas-table input { width: 100%; min-width: 80px; border: 1px solid #cbd5e1; border-radius: 5px; padding: 6px; text-align: center; background: #fff; color: #0f172a; }
+        #tab-jadwal-asas .jadwal-asas-table input.subject { min-width: 180px; text-align: left; }
+        #tab-jadwal-asas .jadwal-asas-table .day-date-cell { vertical-align: middle; font-weight: 600; }
+        @media print {
+            @page { size: A4 landscape; margin: 12mm; }
+            body.jadwal-asas-printing * { visibility: hidden !important; }
+            body.jadwal-asas-printing #jadwal-asas-print-area,
+            body.jadwal-asas-printing #jadwal-asas-print-area * { visibility: visible !important; }
+            body.jadwal-asas-printing #jadwal-asas-print-area { position: absolute; left: 0; top: 0; width: 100%; }
+            body.jadwal-asas-printing #jadwal-asas-print-area .no-print { display: none !important; }
+            #jadwal-asas-print-area .jadwal-asas-table { min-width: 0 !important; width: 100%; }
+            #jadwal-asas-print-area .jadwal-asas-table th,
+            #jadwal-asas-print-area .jadwal-asas-table td { border: 1px solid #222 !important; padding: 7px 9px !important; }
+            #jadwal-asas-print-area .jadwal-asas-table th { background: #e5e7eb !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            #jadwal-asas-print-area .jadwal-asas-table input { border: 0 !important; padding: 0 !important; color: #000 !important; background: transparent !important; font: inherit !important; }
+        }
+
+        #tab-mel-asas .mel-asas-paper { box-sizing: border-box; }
+        #tab-mel-asas .mel-asas-paper table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+        #tab-mel-asas .mel-asas-paper th { font-size: 11pt; font-weight: 700; line-height: 1.2; }
+        #tab-mel-asas .mel-asas-paper td { font-size: 11.5pt; line-height: 1.2; }
+        #tab-mel-asas .mel-asas-paper .mel-meta {
+            padding-left: 10mm; padding-right: 10mm; box-sizing: border-box;
+            column-gap: 14mm; font-size: 11.5pt;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-meta > div { min-width: 0; }
+        #tab-mel-asas .mel-asas-paper .mel-room-cell { border: 1px solid #000; }
+        #tab-mel-asas .mel-asas-paper tbody.mel-room-group { break-inside: avoid; page-break-inside: avoid; }
+        #tab-mel-asas .mel-asas-paper .mel-note-cell {
+            border-left: 1px solid #000; border-right: 1px solid #000; min-height: 9mm;
+        }
+        /* MEL ASAS: tabel diperbesar agar angka dan teks nyaman dibaca */
+        #tab-mel-asas .mel-asas-paper table {
+            font-size: 10.5pt !important;
+            table-layout: fixed;
+        }
+        #tab-mel-asas .mel-asas-paper th {
+            font-size: 10pt !important;
+            line-height: 1.2;
+            padding: 5px 3px !important;
+            vertical-align: middle;
+        }
+        #tab-mel-asas .mel-asas-paper td {
+            font-size: 10.5pt !important;
+            line-height: 1.2;
+            padding: 5px 3px !important;
+            vertical-align: middle;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-meta {
+            font-size: 10.5pt !important;
+            line-height: 1.25;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-heading div {
+            font-size: 11.5pt !important;
+            line-height: 1.25;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-note-cell {
+            min-height: 9mm;
+        }
+        /* Baris tabel sedikit lebih tinggi, menyerupai tinggi baris Excel */
+        #tab-mel-asas .mel-asas-paper tbody tr { min-height: 8mm; }
+        #tab-mel-asas .mel-asas-paper tbody td { padding-top: 5px !important; padding-bottom: 5px !important; }
+        /* Garis pemisah tegas di bawah kop */
+        #tab-mel-asas .mel-asas-paper .mel-heading {
+            padding-bottom: 3mm;
+            margin-bottom: 5mm !important;
+            border-bottom: 1.4px solid #000;
+        }
+        @media screen { #tab-mel-asas .print-only-mel { display: none; } }
+        .print-only-mel { display: none; }
+        @media print {
+            @page { size: A4 landscape; margin: 9mm 10mm; }
+            html, body { width: 100% !important; }
+            #tab-mel-asas .no-print { display: none !important; }
+            #tab-mel-asas .mel-asas-paper {
+                width: 100% !important; max-width: none !important; margin: 0 !important;
+                padding: 0 !important; border: 0 !important; box-shadow: none !important;
+                border-radius: 0 !important; break-inside: avoid !important; page-break-inside: avoid !important;
+            }
+            #tab-mel-asas .mel-asas-paper table {
+                width: 100% !important; table-layout: fixed !important; font-size: 11pt !important;
+            }
+            #tab-mel-asas .mel-asas-paper th,
+            #tab-mel-asas .mel-asas-paper td { padding: 1.15mm 0.9mm !important; }
+            #tab-mel-asas .mel-asas-paper th { font-size: 10.5pt !important; line-height: 1.2 !important; }
+            #tab-mel-asas .mel-asas-paper td { font-size: 10.8pt !important; line-height: 1.2 !important; }
+            #tab-mel-asas .mel-asas-paper tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+            #tab-mel-asas .mel-asas-paper tbody td { min-height: 10mm !important; }
+            #tab-mel-asas .mel-asas-paper tbody.mel-room-group { break-inside: avoid !important; page-break-inside: avoid !important; }
+            #tab-mel-asas .mel-asas-paper .mel-note-cell { height: 8.5mm !important; }
+            #tab-mel-asas .mel-asas-paper .print-only-mel { display: table-cell !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading { margin-bottom: 3.5mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading img { width: 32mm !important; height: 24mm !important; object-fit: contain !important; }
+            #tab-mel-asas .mel-asas-paper .mel-meta {
+                margin: 0 0 3mm !important; padding-left: 12mm !important;
+                padding-right: 12mm !important; column-gap: 16mm !important;
+                font-size: 11pt !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-meta > div { white-space: normal !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature { margin-top: 3mm !important; font-size: 11pt !important; }
+        }
+        /* Khusus cetak/PDF MEL ASAS: kertas A3 mendatar dan ukuran huruf diperbesar */
+        @media print {
+            @page { size: A3 landscape; margin: 8mm 9mm; }
+            body:has(#tab-mel-asas .mel-asas-paper) { font-size: 12pt !important; }
+            #tab-mel-asas .mel-asas-paper {
+                width: 100% !important;
+                max-width: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: 0 !important;
+                box-shadow: none !important;
+            }
+            #tab-mel-asas .mel-asas-paper table {
+                width: 100% !important;
+                table-layout: fixed !important;
+                font-size: 12pt !important;
+            }
+            #tab-mel-asas .mel-asas-paper th {
+                font-size: 11.5pt !important;
+                line-height: 1.25 !important;
+                padding: 2.2mm 1.5mm !important;
+                vertical-align: middle !important;
+            }
+            #tab-mel-asas .mel-asas-paper td {
+                font-size: 12pt !important;
+                line-height: 1.25 !important;
+                padding: 2.5mm 1.5mm !important;
+                vertical-align: middle !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-meta {
+                font-size: 12.5pt !important;
+                line-height: 1.4 !important;
+                margin-bottom: 4mm !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-heading {
+                padding-bottom: 3mm !important;
+                margin-bottom: 5mm !important;
+                border-bottom: 1.4px solid #000 !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-heading div {
+                font-size: 13pt !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-note-cell {
+                min-height: 11mm !important;
+                height: 11mm !important;
+            }
+        }
+
+        /* Pengaturan cetak MEL ASAS: A4 landscape, seluruh tabel masuk halaman dan garis/baris lebih rapat */
+        @media print {
+            @page { size: A4 landscape; margin: 5mm 5mm; }
+            html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            #tab-mel-asas { width: 100% !important; overflow: visible !important; }
+            #tab-mel-asas .mel-asas-paper {
+                box-sizing: border-box !important; width: 100% !important; max-width: none !important;
+                margin: 0 !important; padding: 0 !important; border: 0 !important;
+                box-shadow: none !important; overflow: visible !important;
+            }
+            #tab-mel-asas .mel-asas-paper table {
+                box-sizing: border-box !important; width: 100% !important; max-width: 100% !important;
+                table-layout: fixed !important; border-collapse: collapse !important;
+                border-spacing: 0 !important; font-size: 11.5pt !important;
+            }
+            #tab-mel-asas .mel-asas-paper th,
+            #tab-mel-asas .mel-asas-paper td {
+                box-sizing: border-box !important; border: 0.55px solid #000 !important;
+                padding: 0.65mm 0.4mm !important; vertical-align: middle !important;
+                line-height: 1.08 !important; overflow-wrap: anywhere !important;
+                word-break: normal !important;
+            }
+            #tab-mel-asas .mel-asas-paper th {
+                font-size: 10.8pt !important; font-weight: 700 !important;
+                height: 6mm !important; padding-top: 0.55mm !important; padding-bottom: 0.55mm !important;
+            }
+            #tab-mel-asas .mel-asas-paper tbody td {
+                font-size: 11.5pt !important; height: 7mm !important;
+                min-height: 7mm !important; padding-top: 0.7mm !important; padding-bottom: 0.7mm !important;
+            }
+            #tab-mel-asas .mel-asas-paper tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+            #tab-mel-asas .mel-asas-paper .mel-note-cell { height: 7mm !important; min-height: 7mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading {
+                padding-bottom: 1.2mm !important; margin-bottom: 1.8mm !important;
+                border-bottom: 2.2px solid #000 !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-meta {
+                font-size: 10.5pt !important; line-height: 1.2 !important; margin-bottom: 1.5mm !important;
+            }
+            #tab-mel-asas .mel-asas-paper .mel-heading div { font-size: 11.5pt !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading img { width: 32mm !important; height: 24mm !important; object-fit: contain !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature { font-size: 10.5pt !important; margin-top: 2mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-mark { height: 25mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-stamp { width: 33mm !important; height: 33mm !important; left: -3mm !important; top: -4mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-ttd { width: 40mm !important; height: 18mm !important; left: 8mm !important; top: 2.5mm !important; }
+            #tab-mel-asas .mel-asas-paper .print-only-mel { display: table-cell !important; }
+        }
+
         /* Filter Efek Ketebalan & Transparansi Stempel & TTD */
         .thick-stamp-filter {
             filter: contrast(150%) brightness(80%) drop-shadow(0px 0px 0.5px #000);
@@ -141,6 +345,75 @@
         .tnr-12 {
             font-family: 'Times New Roman', Times, serif !important;
             font-size: 12pt !important;
+        }
+
+        /* Penyelarasan akhir MEL ASAS: TNR 14pt, kolom proporsional, kop dan logo seragam dengan Daftar Peserta */
+        #tab-mel-asas .mel-asas-paper,
+        #tab-mel-asas .mel-asas-paper * {
+            font-family: 'Times New Roman', Times, serif !important;
+        }
+        #tab-mel-asas .mel-asas-paper { font-size: 14pt !important; }
+        #tab-mel-asas .mel-asas-paper table,
+        #tab-mel-asas .mel-asas-paper th,
+        #tab-mel-asas .mel-asas-paper td {
+            font-size: 14pt !important;
+            line-height: 1.12 !important;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-meta { font-size: 14pt !important; }
+        #tab-mel-asas .mel-asas-paper .mel-heading div { font-size: 12pt !important; }
+        #tab-mel-asas .mel-asas-paper .mel-heading {
+            border-bottom: 4px solid #000 !important;
+            padding-bottom: 2mm !important;
+        }
+        #tab-mel-asas .mel-asas-paper .mel-heading img {
+            width: 38mm !important; height: 28mm !important; object-fit: contain !important;
+        }
+        @media print {
+            @page { size: A4 landscape; margin: 5mm; }
+            #tab-mel-asas .mel-asas-paper,
+            #tab-mel-asas .mel-asas-paper * {
+                font-family: 'Times New Roman', Times, serif !important;
+            }
+            #tab-mel-asas .mel-asas-paper table,
+            #tab-mel-asas .mel-asas-paper th,
+            #tab-mel-asas .mel-asas-paper td {
+                font-size: 14pt !important;
+                line-height: 1.05 !important;
+                padding: 0.55mm 0.35mm !important;
+            }
+            #tab-mel-asas .mel-asas-paper th { font-weight: 700 !important; }
+            #tab-mel-asas .mel-asas-paper .mel-meta { font-size: 14pt !important; line-height: 1.1 !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading div { font-size: 12pt !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading { border-bottom: 4px solid #000 !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading img { width: 32mm !important; height: 24mm !important; object-fit: contain !important; }
+            #tab-mel-asas .mel-asas-paper .mel-note-cell { min-width: 0 !important; height: 7mm !important; }
+        }
+
+        /* Penyempurnaan terakhir MEL ASAS: kolom ruang tidak terputus, logo & stempel diperbesar */
+        #tab-mel-asas .mel-asas-paper table { width:100% !important; table-layout:fixed !important; }
+        #tab-mel-asas .mel-asas-paper th,
+        #tab-mel-asas .mel-asas-paper td { padding: 1.1mm 0.55mm !important; overflow-wrap:anywhere !important; }
+        #tab-mel-asas .mel-asas-paper .mel-room-cell,
+        #tab-mel-asas .mel-asas-paper th.mel-room-col { white-space: nowrap !important; overflow-wrap: normal !important; word-break: keep-all !important; }
+        #tab-mel-asas .mel-asas-paper .mel-note-cell { min-width:0 !important; }
+        #tab-mel-asas .mel-asas-paper .mel-signature { font-family:'Times New Roman',Times,serif !important; font-size:12pt !important; line-height:1.2 !important; }
+        #tab-mel-asas .mel-asas-paper .mel-signature-mark { height:28mm !important; }
+        #tab-mel-asas .mel-asas-paper .mel-signature-stamp { width:36mm !important; height:36mm !important; left:-3mm !important; top:-4mm !important; }
+        #tab-mel-asas .mel-asas-paper .mel-signature-ttd { width:44mm !important; height:20mm !important; left:9mm !important; top:3mm !important; }
+        @media print {
+            @page { size:A4 landscape; margin:5mm; }
+            #tab-mel-asas .mel-asas-paper table,
+            #tab-mel-asas .mel-asas-paper th,
+            #tab-mel-asas .mel-asas-paper td { font-size:12pt !important; line-height:1.08 !important; padding:0.7mm 0.4mm !important; }
+            #tab-mel-asas .mel-asas-paper th { font-size:11pt !important; }
+            #tab-mel-asas .mel-asas-paper .mel-room-cell,
+            #tab-mel-asas .mel-asas-paper th.mel-room-col { white-space: nowrap !important; overflow-wrap: normal !important; word-break: keep-all !important; }
+            #tab-mel-asas .mel-asas-paper .mel-meta { font-size:12pt !important; }
+            #tab-mel-asas .mel-asas-paper .mel-heading img { width:32mm !important; height:24mm !important; object-fit:contain !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature { font-size:12pt !important; margin-top:2mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-mark { height:25mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-stamp { width:33mm !important; height:33mm !important; left:-3mm !important; top:-4mm !important; }
+            #tab-mel-asas .mel-asas-paper .mel-signature-ttd { width:40mm !important; height:18mm !important; left:8mm !important; top:2.5mm !important; }
         }
     </style>
 </head>
@@ -169,32 +442,38 @@
                 <button onclick="switchTab('tab-identitas')" id="nav-tab-identitas" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 bg-cyan-600 text-white shadow font-bold whitespace-nowrap">
                     <i class="fa-solid fa-school"></i> <span>1. Identitas</span>
                 </button>
+                <button onclick="switchTab('tab-jadwal-asas')" id="nav-tab-jadwal-asas" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-calendar-days"></i> <span>2. Jadwal ASAS</span>
+                </button>
                 <button onclick="switchTab('tab-students')" id="nav-tab-students" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-users"></i> <span>2. Data Siswa</span>
+                    <i class="fa-solid fa-users"></i> <span>3. Data Siswa</span>
                 </button>
                 <button onclick="switchTab('tab-room-inventory')" id="nav-tab-room-inventory" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-chair"></i> <span>3. Ruang & Bangku</span>
+                    <i class="fa-solid fa-chair"></i> <span>4. Ruang & Bangku</span>
                 </button>
                 <button onclick="switchTab('tab-shuffle')" id="nav-tab-shuffle" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-layer-group"></i> <span>4. Pemetaan Ruang</span>
+                    <i class="fa-solid fa-layer-group"></i> <span>5. Pemetaan Ruang</span>
                 </button>
                 <button onclick="switchTab('tab-preview-recap')" id="nav-tab-preview-recap" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-square-poll-vertical"></i> <span>5. Rekapitulasi</span>
+                    <i class="fa-solid fa-square-poll-vertical"></i> <span>6. Rekapitulasi</span>
                 </button>
                 <button onclick="switchTab('tab-preview-roster')" id="nav-tab-preview-roster" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-clipboard-user"></i> <span>6. Peserta Ruang</span>
+                    <i class="fa-solid fa-clipboard-user"></i> <span>7. Peserta Ruang</span>
                 </button>
                 <button onclick="switchTab('tab-preview-attendance')" id="nav-tab-preview-attendance" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-file-pen"></i> <span>7. Daftar Hadir</span>
+                    <i class="fa-solid fa-file-pen"></i> <span>8. Daftar Hadir</span>
                 </button>
                 <button onclick="switchTab('tab-preview-cards')" id="nav-tab-preview-cards" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-id-badge"></i> <span>8. Kartu Ujian</span>
+                    <i class="fa-solid fa-id-badge"></i> <span>9. Kartu Ujian</span>
                 </button>
                 <button onclick="switchTab('tab-preview-desk')" id="nav-tab-preview-desk" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-ticket-simple"></i> <span>9. Nomor Bangku</span>
+                    <i class="fa-solid fa-ticket-simple"></i> <span>10. Nomor Bangku</span>
                 </button>
                 <button onclick="switchTab('tab-preview-seating')" id="nav-tab-preview-seating" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
-                    <i class="fa-solid fa-table-cells"></i> <span>10. Denah Bangku</span>
+                    <i class="fa-solid fa-table-cells"></i> <span>11. Denah Bangku</span>
+                </button>
+                <button type="button" onclick="openMelAsasMenu()" id="nav-tab-mel-asas" class="px-3 py-2 rounded-lg transition-all text-slate-300 hover:text-white flex items-center gap-1.5 font-medium whitespace-nowrap">
+                    <i class="fa-solid fa-clipboard-check"></i> <span>12. MEL ASAS</span>
                 </button>
             </nav>
         </div>
@@ -395,6 +674,49 @@
         </section>
 
         <!-- TAB 2: DATA SISWA -->
+
+        <!-- TAB 2: JADWAL ASAS -->
+        <section id="tab-jadwal-asas" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-cyan-700"></i> Jadwal Asesmen Sumatif Akhir Semester (ASAS)
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Atur jadwal hari, tanggal, jam, dan mata pelajaran. Data tersimpan otomatis di perangkat ini.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 no-print">
+                        <button type="button" onclick="addJadwalAsasRow()" class="px-3 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah Baris
+                        </button>
+                        <button type="button" onclick="resetJadwalAsas()" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Kembalikan Contoh
+                        </button>
+                        <button type="button" onclick="printJadwalAsas()" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">
+                            <i class="fa-solid fa-print mr-1"></i> Cetak Jadwal
+                        </button>
+                    </div>
+                </div>
+                <div id="jadwal-asas-print-area" class="jadwal-asas-paper">
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-bold tracking-wide">JADWAL KEGIATAN</h3>
+                        <p class="text-sm text-slate-600">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse jadwal-asas-table">
+                            <thead>
+                                <tr>
+                                    <th>HARI</th><th>TANGGAL</th><th>JAM KE-</th><th>JAM</th><th>MATA PELAJARAN</th>
+                                    <th class="no-print">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jadwal-asas-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="tab-students" class="tab-content space-y-6 hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <!-- Student Master Data Section Header -->
@@ -412,6 +734,9 @@
                     <div class="flex flex-wrap items-center gap-2">
                         <button onclick="openAddStudentModal()" class="bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow flex items-center gap-1.5 transition">
                             <i class="fa-solid fa-user-plus"></i> + Tambah Siswa Baru
+                        </button>
+                        <button onclick="downloadStudentTemplate()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow-sm flex items-center gap-1.5 transition" title="Unduh Template Excel (Nama Siswa, Kelas, Jenis Kelamin L/P, NIS, NISN)">
+                            <i class="fa-solid fa-file-arrow-down"></i> Template Excel
                         </button>
                         <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow-sm flex items-center gap-1.5 transition">
                             <i class="fa-solid fa-file-excel"></i> Import Excel
@@ -459,6 +784,11 @@
                                 <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option>
                             </optgroup>
                         </select>
+                        <select id="filter-gender-select" onchange="renderStudentTable()" class="text-xs p-2 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white font-medium">
+                            <option value="ALL">Semua L/P</option>
+                            <option value="L">Laki-laki (L)</option>
+                            <option value="P">Perempuan (P)</option>
+                        </select>
                     </div>
                 </div>
 
@@ -472,6 +802,7 @@
                                 <th class="p-3">NISN</th>
                                 <th class="p-3">Nama Lengkap Siswa (Abjad A-Z)</th>
                                 <th class="p-3 text-center">Kelas</th>
+                                <th class="p-3 text-center">Jenis Kelamin (L/P)</th>
                                 <th class="p-3 text-center">No. Urut Kelas</th>
                                 <th class="p-3 text-center">No. Ujian</th>
                                 <th class="p-3 text-center w-24">Aksi</th>
@@ -852,6 +1183,53 @@
             </div>
         </section>
 
+        <!-- TAB 11: MONITORING DAN EVALUASI (MEL ASAS) -->
+        <section id="tab-mel-asas" class="tab-content space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 no-print">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-violet-50 text-violet-700 rounded-xl">
+                            <i class="fa-solid fa-clipboard-check text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Monitoring dan Evaluasi Peserta Asesmen Sumatif Akhir Semester (MEL ASAS)</h2>
+                            <p class="text-xs text-slate-500">Rekap peserta ujian, kehadiran, ketidakhadiran, dan keterangan nomor peserta tidak hadir.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="renderMelAsasPreview()" class="bg-violet-100 hover:bg-violet-200 text-violet-800 text-xs font-bold px-3 py-2 rounded-lg">
+                            <i class="fa-solid fa-arrows-rotate mr-1"></i> Perbarui Rekap
+                        </button>
+                        <button onclick="triggerPrint('mel-asas')" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow">
+                            <i class="fa-solid fa-print mr-1"></i> Cetak MEL ASAS
+                        </button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Hari/Tanggal (pilih dari Jadwal ASAS)</label>
+                        <select id="mel-asas-date" onchange="saveMelAsasMeta(); renderMelAsasPreview()"
+                            class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-violet-500 outline-none">
+                            <option value="">Pilih hari dan tanggal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Mata Pelajaran (sesuai hari yang dipilih)</label>
+                        <select id="mel-asas-subject" onchange="saveMelAsasMeta(); renderMelAsasPreview()"
+                            class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-violet-500 outline-none">
+                            <option value="">Pilih mata pelajaran</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-3">
+                    Jumlah peserta ujian terisi otomatis berdasarkan data pemetaan ruang. Kolom jumlah peserta hadir dan tidak hadir dikosongkan untuk diisi manual oleh petugas. Data MEL ASAS tersimpan di browser ini.
+                </p>
+            </div>
+            <div id="mel-asas-preview-container" class="print-area bg-slate-200/60 p-3 sm:p-6 rounded-2xl border border-slate-300 overflow-x-auto">
+                <!-- Tabel MEL ASAS dibuat otomatis berdasarkan pemetaan ruang -->
+            </div>
+        </section>
+
     </main>
 
     <!-- PASTE DATA MODAL -->
@@ -866,11 +1244,11 @@
                 </button>
             </div>
             <p class="text-xs text-slate-500 leading-relaxed">
-                Paste data nama dan kelas per baris (bisa dipisah tab atau spasi):<br>
-                <strong class="text-slate-700">Format: Nama [Tab/Spasi] Kelas [Tab] NIS [Tab] NISN</strong><br>
+                Paste data <strong>Nama Siswa</strong>, <strong>Kelas</strong>, dan <strong>Jenis Kelamin (L/P)</strong> per baris (bisa dipisah tab dari Excel atau spasi):<br>
+                <strong class="text-slate-700">Format: Nama Siswa [Tab/Spasi] Kelas [Tab/Spasi] Jenis Kelamin (L/P) [Tab] NIS [Tab] NISN</strong><br>
                 <em>Siswa akan diurutkan otomatis sesuai abjad A-Z per kelas & disimpan di browser.</em>
             </p>
-            <textarea id="paste-text-area" rows="8" placeholder="Contoh:&#10;Ahimsa Saputra 7A&#10;Budi Santoso 7A&#10;Citra Dewi 8A&#10;Dedi Kurniawan 8A" class="w-full text-xs font-mono p-3 border rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"></textarea>
+            <textarea id="paste-text-area" rows="8" placeholder="Contoh (Tab dari Excel atau Spasi):&#10;Ahimsa Saputra&#9;7A&#9;L&#10;Budi Santoso 7A L&#10;Citra Dewi&#9;8A&#9;P&#10;Dedi Kurniawan 8A L" class="w-full text-xs font-mono p-3 border rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none"></textarea>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closePasteModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
                 <button onclick="processPastedData()" class="px-5 py-2 text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg shadow">Impor & Urutkan Data</button>
@@ -904,13 +1282,23 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Jenis Kelamin (L/P) *</label>
+                        <select id="m-student-gender" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white font-bold">
+                            <option value="L" selected>L (Laki-laki)</option>
+                            <option value="P">P (Perempuan)</option>
+                            <option value="">-- Belum Diisi --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">NIS</label>
                         <input type="text" id="m-student-nis" placeholder="Opsional" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">NISN</label>
-                    <input type="text" id="m-student-nisn" placeholder="Opsional" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">NISN</label>
+                        <input type="text" id="m-student-nisn" placeholder="Opsional" class="w-full text-xs p-2.5 border rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none">
+                    </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -2384,13 +2772,87 @@
             }
         }
 
+
+        // --- JADWAL ASAS ---
+        const jadwalAsasContoh = [
+            ['Selasa','1 Desember 2026','1','07.00 - 09.00','Bahasa Indonesia'],
+            ['Selasa','1 Desember 2026','2','09.30 - 11.00','Pendidikan Agama'],
+            ['Rabu','2 Desember 2026','1','07.00 - 09.00','Matematika'],
+            ['Rabu','2 Desember 2026','2','09.30 - 11.00','PJOK'],
+            ['Kamis','3 Desember 2026','1','07.00 - 09.00','Bahasa Inggris'],
+            ['Kamis','3 Desember 2026','2','09.30 - 11.00','Seni Budaya'],
+            ['Jumat','4 Desember 2026','1','07.00 - 09.00','IPS'],
+            ['Senin','7 Desember 2026','1','07.00 - 09.00','IPA'],
+            ['Senin','7 Desember 2026','2','09.30 - 11.00','Informatika'],
+            ['Selasa','8 Desember 2026','1','07.00 - 09.00','PPKn'],
+            ['Selasa','8 Desember 2026','2','09.30 - 11.00','Bahasa Daerah']
+        ];
+        function getJadwalAsasData() {
+            try {
+                const saved = localStorage.getItem('jadwalAsasData_v1');
+                return saved ? JSON.parse(saved) : jadwalAsasContoh.map(r => [...r]);
+            } catch (e) { return jadwalAsasContoh.map(r => [...r]); }
+        }
+        function saveJadwalAsasData() {
+            const rows = [...document.querySelectorAll('#jadwal-asas-tbody tr')].map(tr =>
+                [...tr.querySelectorAll('input')].map(input => input.value)
+            );
+            try { localStorage.setItem('jadwalAsasData_v1', JSON.stringify(rows)); } catch (e) {}
+            if (typeof syncMelAsasScheduleOptions === 'function') syncMelAsasScheduleOptions(true);
+        }
+        function renderJadwalAsas() {
+            const tbody = document.getElementById('jadwal-asas-tbody');
+            if (!tbody) return;
+            const rows = getJadwalAsasData();
+            tbody.innerHTML = rows.map((r, i) => `
+                <tr>
+                    <td><input aria-label="Hari baris ${i+1}" value="${escapeHtml(r[0] || '')}" onchange="saveJadwalAsasData()"></td>
+                    <td><input aria-label="Tanggal baris ${i+1}" value="${escapeHtml(r[1] || '')}" onchange="saveJadwalAsasData()"></td>
+                    <td><input aria-label="Jam ke baris ${i+1}" value="${escapeHtml(r[2] || '')}" onchange="saveJadwalAsasData()"></td>
+                    <td><input aria-label="Waktu baris ${i+1}" value="${escapeHtml(r[3] || '')}" onchange="saveJadwalAsasData()"></td>
+                    <td><input class="subject" aria-label="Mata pelajaran baris ${i+1}" value="${escapeHtml(r[4] || '')}" onchange="saveJadwalAsasData()"></td>
+                    <td class="no-print"><button type="button" onclick="removeJadwalAsasRow(${i})" class="text-rose-600 hover:text-rose-800 font-bold px-2" title="Hapus baris"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>`).join('');
+            tbody.querySelectorAll('input').forEach(input => input.addEventListener('input', saveJadwalAsasData));
+            if (typeof syncMelAsasScheduleOptions === 'function') syncMelAsasScheduleOptions(true);
+        }
+        function addJadwalAsasRow() {
+            const rows = getJadwalAsasData();
+            rows.push(['','','','','']);
+            localStorage.setItem('jadwalAsasData_v1', JSON.stringify(rows));
+            renderJadwalAsas();
+        }
+        function removeJadwalAsasRow(index) {
+            const rows = getJadwalAsasData();
+            rows.splice(index, 1);
+            localStorage.setItem('jadwalAsasData_v1', JSON.stringify(rows));
+            renderJadwalAsas();
+        }
+        function resetJadwalAsas() {
+            if (!confirm('Kembalikan jadwal ke contoh pada gambar?')) return;
+            localStorage.removeItem('jadwalAsasData_v1');
+            renderJadwalAsas();
+        }
+        function printJadwalAsas() {
+            saveJadwalAsasData();
+            document.body.classList.add('jadwal-asas-printing');
+            window.print();
+            setTimeout(() => document.body.classList.remove('jadwal-asas-printing'), 500);
+        }
+        window.addJadwalAsasRow = addJadwalAsasRow;
+        window.removeJadwalAsasRow = removeJadwalAsasRow;
+        window.saveJadwalAsasData = saveJadwalAsasData;
+        window.resetJadwalAsas = resetJadwalAsas;
+        window.printJadwalAsas = printJadwalAsas;
+        document.addEventListener('DOMContentLoaded', renderJadwalAsas);
+
         // --- DATA MANAGEMENT & MODALS ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             const targetEl = document.getElementById(tabId);
             if (targetEl) targetEl.classList.remove('hidden');
 
-            const tabKeys = ['identitas', 'students', 'room-inventory', 'shuffle', 'preview-recap', 'preview-roster', 'preview-attendance', 'preview-cards', 'preview-desk', 'preview-seating'];
+            const tabKeys = ['identitas', 'jadwal-asas', 'students', 'room-inventory', 'shuffle', 'preview-recap', 'preview-roster', 'preview-attendance', 'preview-cards', 'preview-desk', 'preview-seating', 'mel-asas'];
             tabKeys.forEach(t => {
                 const btn = document.getElementById(`nav-tab-${t}`);
                 if (btn) {
@@ -2402,7 +2864,9 @@
                 }
             });
 
-            if (tabId === 'tab-shuffle') {
+            if (tabId === 'tab-jadwal-asas') {
+                renderJadwalAsas();
+            } else if (tabId === 'tab-shuffle') {
                 syncOverridesWithRoomInventory(false);
                 renderPairRulesUI();
                 renderCustomRoomOverridesUI();
@@ -2425,8 +2889,15 @@
                 renderSeatingPreview();
             } else if (tabId === 'tab-room-inventory') {
                 renderRoomInventoryUI();
+            } else if (tabId === 'tab-mel-asas') {
+                loadMelAsasMeta();
+                renderMelAsasPreview();
             }
         }
+
+        // Ekspos fungsi navigasi ke window agar atribut onclick pada tombol menu
+        // dapat memanggilnya meskipun kode utama berjalan sebagai JavaScript module.
+        window.switchTab = switchTab;
 
         function populateFilterSelect(selectId) {
             const select = document.getElementById(selectId);
@@ -2441,29 +2912,47 @@
             select.value = currentVal;
         }
 
+        function normalizeGender(val) {
+            if (!val) return '';
+            const v = String(val).trim().toUpperCase();
+            if (v === 'L' || v === 'LK' || v === 'LAKI-LAKI' || v === 'LAKI' || v === 'MALE' || v === 'M') return 'L';
+            if (v === 'P' || v === 'PR' || v === 'PEREMPUAN' || v === 'WANITA' || v === 'FEMALE' || v === 'F') return 'P';
+            return '';
+        }
+
+        function isKnownClassToken(token) {
+            if (!token) return false;
+            const upper = token.toUpperCase().trim();
+            return getAvailableClasses().includes(upper) || /^([789]|1[0-2])[A-Z]$/.test(upper);
+        }
+
         function renderStudentTable() {
             const tbody = document.getElementById('student-table-body');
             const searchInput = document.getElementById('student-search-input');
             const filterClassInput = document.getElementById('filter-class-select');
+            const filterGenderInput = document.getElementById('filter-gender-select');
             
             if (!tbody) return;
             const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
             const filterCls = filterClassInput ? filterClassInput.value : 'ALL';
+            const filterGender = filterGenderInput ? filterGenderInput.value : 'ALL';
 
             const filtered = rawStudents.filter(s => {
                 const matchSearch = s.name.toLowerCase().includes(search) || 
                                     (s.nis && s.nis.toLowerCase().includes(search)) || 
                                     (s.nisn && s.nisn.toLowerCase().includes(search)) ||
                                     (s.examNo && s.examNo.toLowerCase().includes(search)) ||
+                                    (s.gender && s.gender.toLowerCase().includes(search)) ||
                                     s.class.toLowerCase().includes(search);
                 const matchClass = filterCls === 'ALL' || s.class === filterCls;
-                return matchSearch && matchClass;
+                const matchGender = filterGender === 'ALL' || (s.gender || '') === filterGender;
+                return matchSearch && matchClass && matchGender;
             });
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" class="text-center py-12 text-slate-400">
+                        <td colspan="9" class="text-center py-12 text-slate-400">
                             <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
                             Belum ada data siswa. Tambahkan melalui tombol <strong>"+ Tambah Siswa Baru"</strong>, <strong>"Import Excel"</strong>, atau <strong>"Paste Excel"</strong>.
                         </td>
@@ -2473,6 +2962,12 @@
 
             let html = '';
             filtered.forEach((s, idx) => {
+                const genderBadge = s.gender === 'L'
+                    ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">L</span>`
+                    : s.gender === 'P'
+                        ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-pink-100 text-pink-800 border border-pink-200">P</span>`
+                        : `<span class="text-slate-400">-</span>`;
+
                 html += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 text-center text-slate-400 font-mono">${idx + 1}</td>
@@ -2483,6 +2978,9 @@
                             <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
                                 ${s.class}
                             </span>
+                        </td>
+                        <td class="p-3 text-center">
+                            ${genderBadge}
                         </td>
                         <td class="p-3 text-center font-mono font-bold text-slate-800">
                             ${String(s.classSeqNo || 1).padStart(2, '0')}
@@ -2511,16 +3009,22 @@
             const grid = document.getElementById('class-stats-grid');
             const totalBadge = document.getElementById('total-student-badge');
             
-            if (totalBadge) totalBadge.innerText = `Total: ${rawStudents.length} Siswa`;
+            const totalL = rawStudents.filter(s => s.gender === 'L').length;
+            const totalP = rawStudents.filter(s => s.gender === 'P').length;
+            if (totalBadge) totalBadge.innerText = `Total: ${rawStudents.length} Siswa (L: ${totalL} | P: ${totalP})`;
             if (!grid) return;
 
             let html = '';
             ALL_CLASSES.forEach(cls => {
-                const count = rawStudents.filter(s => s.class === cls).length;
+                const clsStudents = rawStudents.filter(s => s.class === cls);
+                const count = clsStudents.length;
+                const countL = clsStudents.filter(s => s.gender === 'L').length;
+                const countP = clsStudents.filter(s => s.gender === 'P').length;
                 html += `
                     <div class="bg-slate-50 border border-slate-200 p-2 rounded-lg">
                         <div class="font-bold text-slate-700">${cls}</div>
                         <div class="text-xs font-extrabold ${count > 0 ? 'text-cyan-700' : 'text-slate-400'}">${count} Siswa</div>
+                        <div class="text-[10px] text-slate-500 font-semibold mt-0.5">L: ${countL} | P: ${countP}</div>
                     </div>
                 `;
             });
@@ -2555,6 +3059,21 @@
             });
         }
 
+        function downloadStudentTemplate() {
+            const templateData = [
+                { "Nama Siswa": "Ahimsa Saputra", "Kelas": "7A", "Jenis Kelamin (L/P)": "L", "NIS": "1001", "NISN": "0123456789" },
+                { "Nama Siswa": "Budi Santoso", "Kelas": "7A", "Jenis Kelamin (L/P)": "L", "NIS": "1002", "NISN": "0123456790" },
+                { "Nama Siswa": "Citra Dewi", "Kelas": "8A", "Jenis Kelamin (L/P)": "P", "NIS": "1003", "NISN": "0123456791" },
+                { "Nama Siswa": "Dina Kartika", "Kelas": "8A", "Jenis Kelamin (L/P)": "P", "NIS": "1004", "NISN": "0123456792" }
+            ];
+            const worksheet = XLSX.utils.json_to_sheet(templateData);
+            worksheet['!cols'] = [{ wch: 28 }, { wch: 10 }, { wch: 20 }, { wch: 14 }, { wch: 16 }];
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Template_Data_Siswa");
+            XLSX.writeFile(workbook, "Template_Data_Siswa_SMPN3_Besuki.xlsx");
+            showToast("Template Excel berhasil diunduh!");
+        }
+
         function exportToExcel() {
             if (rawStudents.length === 0) {
                 showToast("Tidak ada data siswa untuk diexport!", "warning");
@@ -2567,6 +3086,7 @@
                 "NISN": s.nisn || '',
                 "Nama Siswa": s.name,
                 "Kelas": s.class,
+                "Jenis Kelamin (L/P)": s.gender || '',
                 "No. Urut Kelas": s.classSeqNo,
                 "No. Ujian": s.examNo || '',
                 "Ruang": s.room || 'Belum dialokasi',
@@ -2595,28 +3115,59 @@
             const lines = text.split('\n');
             let addedCount = 0;
 
-            lines.forEach(line => {
+            lines.forEach((line, idx) => {
                 line = line.trim();
                 if (!line) return;
 
                 let name = '';
                 let cls = '7A';
+                let gender = '';
                 let nis = '';
                 let nisn = '';
 
                 if (line.includes('\t')) {
                     const parts = line.split('\t').map(p => p.trim());
+                    if (idx === 0 && parts[0].toLowerCase().includes('nama') && (parts[1] || '').toLowerCase().includes('kelas')) {
+                        return;
+                    }
                     name = parts[0] || '';
                     cls = parts[1] || '7A';
-                    nis = parts[2] || '';
-                    nisn = parts[3] || '';
+                    const parsedGender = normalizeGender(parts[2]);
+                    if (parsedGender) {
+                        gender = parsedGender;
+                        nis = parts[3] || '';
+                        nisn = parts[4] || '';
+                    } else if ((parts[2] || '') === '' || (parts[2] || '') === '-') {
+                        gender = '';
+                        nis = parts[3] || '';
+                        nisn = parts[4] || '';
+                    } else {
+                        // Fallback format lama: Nama [Tab] Kelas [Tab] NIS [Tab] NISN
+                        gender = '';
+                        nis = parts[2] || '';
+                        nisn = parts[3] || '';
+                    }
                 } else {
                     const tokens = line.split(/\s+/);
-                    if (tokens.length >= 2) {
-                        const lastToken = tokens[tokens.length - 1].toUpperCase();
-                        if (ALL_CLASSES.includes(lastToken)) {
-                            cls = lastToken;
+                    if (tokens.length >= 3) {
+                        const lastToken = tokens[tokens.length - 1];
+                        const secondLastToken = tokens[tokens.length - 2];
+                        const parsedLastGender = normalizeGender(lastToken);
+                        if (parsedLastGender && isKnownClassToken(secondLastToken)) {
+                            gender = parsedLastGender;
+                            cls = secondLastToken.toUpperCase();
+                            name = tokens.slice(0, tokens.length - 2).join(' ');
+                        } else if (isKnownClassToken(lastToken)) {
+                            cls = lastToken.toUpperCase();
                             name = tokens.slice(0, tokens.length - 1).join(' ');
+                        } else {
+                            name = line;
+                        }
+                    } else if (tokens.length === 2) {
+                        const lastToken = tokens[1];
+                        if (isKnownClassToken(lastToken)) {
+                            cls = lastToken.toUpperCase();
+                            name = tokens[0];
                         } else {
                             name = line;
                         }
@@ -2631,6 +3182,7 @@
                         id: 'STU-' + Math.random().toString(36).substring(2, 9),
                         name: name,
                         class: cls,
+                        gender: gender,
                         nis: nis,
                         nisn: nisn
                     });
@@ -2650,6 +3202,7 @@
             document.getElementById('modal-student-title').innerText = "+ Tambah Siswa Baru";
             document.getElementById('edit-student-index').value = "-1";
             document.getElementById('m-student-name').value = "";
+            document.getElementById('m-student-gender').value = "L";
             document.getElementById('m-student-nis').value = "";
             document.getElementById('m-student-nisn').value = "";
             document.getElementById('modal-student').classList.remove('hidden');
@@ -2663,6 +3216,7 @@
             document.getElementById('edit-student-index').value = id;
             document.getElementById('m-student-name').value = s.name;
             document.getElementById('m-student-class').value = s.class;
+            document.getElementById('m-student-gender').value = s.gender || "";
             document.getElementById('m-student-nis').value = s.nis || "";
             document.getElementById('m-student-nisn').value = s.nisn || "";
             document.getElementById('modal-student').classList.remove('hidden');
@@ -2676,6 +3230,7 @@
             const id = document.getElementById('edit-student-index').value;
             const name = document.getElementById('m-student-name').value.trim();
             const cls = document.getElementById('m-student-class').value;
+            const gender = normalizeGender(document.getElementById('m-student-gender').value);
             const nis = document.getElementById('m-student-nis').value.trim();
             const nisn = document.getElementById('m-student-nisn').value.trim();
 
@@ -2689,6 +3244,7 @@
                     id: 'STU-' + Math.random().toString(36).substring(2, 9),
                     name: name,
                     class: cls,
+                    gender: gender,
                     nis: nis,
                     nisn: nisn
                 });
@@ -2698,6 +3254,7 @@
                 if (s) {
                     s.name = name;
                     s.class = cls;
+                    s.gender = gender;
                     s.nis = nis;
                     s.nisn = nisn;
                 }
@@ -2724,24 +3281,69 @@
                     const worksheet = workbook.Sheets[firstSheet];
                     const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+                    let colMap = { name: 0, cls: 1, gender: 2, nis: 3, nisn: 4, hasHeader: false };
+                    if (json.length > 0 && Array.isArray(json[0])) {
+                        const headers = json[0].map(h => String(h || '').toLowerCase().trim());
+                        const nameIdx = headers.findIndex(h => h.includes('nama'));
+                        const clsIdx = headers.findIndex(h => h.includes('kelas'));
+                        if (nameIdx !== -1 && clsIdx !== -1) {
+                            const genderIdx = headers.findIndex(h => h.includes('kelamin') || h.includes('l/p') || h === 'jk' || h.includes('gender'));
+                            const nisIdx = headers.findIndex(h => h === 'nis');
+                            const nisnIdx = headers.findIndex(h => h.includes('nisn'));
+                            colMap = {
+                                name: nameIdx,
+                                cls: clsIdx,
+                                gender: genderIdx,
+                                nis: nisIdx,
+                                nisn: nisnIdx,
+                                hasHeader: true
+                            };
+                        }
+                    }
+
                     let added = 0;
                     json.forEach((row, idx) => {
-                        if (idx === 0 && (row[0] + '').toLowerCase().includes('nama')) return; 
-                        if (row.length > 0 && row[0]) {
-                            const name = (row[0] + '').trim();
-                            const cls = (row[1] || '7A').toString().trim().toUpperCase();
-                            const nis = row[2] ? (row[2] + '').trim() : '';
-                            const nisn = row[3] ? (row[3] + '').trim() : '';
+                        if (idx === 0 && colMap.hasHeader) return;
+                        if (!Array.isArray(row) || row.length === 0) return;
 
-                            rawStudents.push({
-                                id: 'STU-' + Math.random().toString(36).substring(2, 9),
-                                name: name,
-                                class: cls,
-                                nis: nis,
-                                nisn: nisn
-                            });
-                            added++;
+                        const rawName = row[colMap.name];
+                        if (!rawName || String(rawName).trim() === '') return;
+
+                        const name = String(rawName).trim();
+                        const cls = (row[colMap.cls] || '7A').toString().trim().toUpperCase();
+
+                        let gender = '';
+                        let nis = '';
+                        let nisn = '';
+
+                        if (colMap.hasHeader) {
+                            gender = colMap.gender !== -1 ? normalizeGender(row[colMap.gender]) : '';
+                            nis = colMap.nis !== -1 && row[colMap.nis] !== undefined ? String(row[colMap.nis]).trim() : '';
+                            nisn = colMap.nisn !== -1 && row[colMap.nisn] !== undefined ? String(row[colMap.nisn]).trim() : '';
+                        } else {
+                            const col2 = row[2] !== undefined ? String(row[2]).trim() : '';
+                            const parsedGender = normalizeGender(col2);
+                            if (parsedGender || col2 === '' || col2 === '-') {
+                                gender = parsedGender;
+                                nis = row[3] !== undefined ? String(row[3]).trim() : '';
+                                nisn = row[4] !== undefined ? String(row[4]).trim() : '';
+                            } else {
+                                // Fallback format lama tanpa kolom L/P: [Nama, Kelas, NIS, NISN]
+                                gender = '';
+                                nis = col2;
+                                nisn = row[3] !== undefined ? String(row[3]).trim() : '';
+                            }
                         }
+
+                        rawStudents.push({
+                            id: 'STU-' + Math.random().toString(36).substring(2, 9),
+                            name: name,
+                            class: cls,
+                            gender: gender,
+                            nis: nis,
+                            nisn: nisn
+                        });
+                        added++;
                     });
 
                     reindexAllStudents();
@@ -2751,6 +3353,8 @@
                     showToast(`Berhasil mengimpor ${added} siswa dari file Excel!`);
                 } catch (err) {
                     showToast("Gagal membaca file Excel/CSV.", "danger");
+                } finally {
+                    event.target.value = '';
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -3544,6 +4148,240 @@
             container.innerHTML = html;
         }
 
+        // --- MEL ASAS: MONITORING DAN EVALUASI KEHADIRAN ---
+        const MEL_ASAS_META_KEY = 'smpn3_mel_asas_meta';
+        const MEL_ASAS_DATA_KEY = 'smpn3_mel_asas_records';
+
+        function getJadwalAsasRowsForLink() {
+            try {
+                const rows = JSON.parse(localStorage.getItem('jadwalAsasData_v1') || 'null');
+                return Array.isArray(rows) ? rows : jadwalAsasContoh.map(r => [...r]);
+            } catch (e) { return jadwalAsasContoh.map(r => [...r]); }
+        }
+
+        function syncMelAsasScheduleOptions(preserve = true) {
+            const dateEl = document.getElementById('mel-asas-date');
+            const subjectEl = document.getElementById('mel-asas-subject');
+            if (!dateEl || !subjectEl) return;
+            const oldDate = preserve ? dateEl.value : '';
+            const oldSubject = preserve ? subjectEl.value : '';
+            const rows = getJadwalAsasRowsForLink();
+            const days = [];
+            rows.forEach(r => {
+                const day = String(r[0] || '').trim();
+                const date = String(r[1] || '').trim();
+                if (!day && !date) return;
+                const value = [day, date].filter(Boolean).join(', ');
+                if (!days.includes(value)) days.push(value);
+            });
+            dateEl.innerHTML = '<option value="">Pilih hari dan tanggal</option>' +
+                days.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            if (days.includes(oldDate)) dateEl.value = oldDate;
+
+            const selectedDay = dateEl.value;
+            const subjects = [];
+            rows.forEach(r => {
+                const day = String(r[0] || '').trim();
+                const date = String(r[1] || '').trim();
+                const dayValue = [day, date].filter(Boolean).join(', ');
+                const subject = String(r[4] || '').trim();
+                if (subject && (!selectedDay || selectedDay === dayValue) && !subjects.includes(subject)) subjects.push(subject);
+            });
+            subjectEl.innerHTML = '<option value="">Pilih mata pelajaran</option>' +
+                subjects.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            if (subjects.includes(oldSubject)) subjectEl.value = oldSubject;
+            else subjectEl.value = '';
+        }
+
+        function getMelAsasMeta() {
+            return {
+                date: document.getElementById('mel-asas-date')?.value || '',
+                subject: document.getElementById('mel-asas-subject')?.value || ''
+            };
+        }
+
+        function loadMelAsasMeta() {
+            let meta = {};
+            try { meta = JSON.parse(localStorage.getItem(MEL_ASAS_META_KEY) || '{}'); } catch (e) {}
+            syncMelAsasScheduleOptions(false);
+            const dateEl = document.getElementById('mel-asas-date');
+            const subjectEl = document.getElementById('mel-asas-subject');
+            if (dateEl && meta.date) dateEl.value = meta.date;
+            syncMelAsasScheduleOptions(true);
+            if (subjectEl && meta.subject) subjectEl.value = meta.subject;
+        }
+
+        function saveMelAsasMeta() {
+            if (document.activeElement?.id === 'mel-asas-date') syncMelAsasScheduleOptions(true);
+            try { localStorage.setItem(MEL_ASAS_META_KEY, JSON.stringify(getMelAsasMeta())); } catch (e) {}
+        }
+
+        function getMelAsasRecords() {
+            try { return JSON.parse(localStorage.getItem(MEL_ASAS_DATA_KEY) || '{}'); }
+            catch (e) { return {}; }
+        }
+
+        function saveMelAsasField(key, field, value) {
+            const records = getMelAsasRecords();
+            if (!records[key]) records[key] = {};
+            records[key][field] = value;
+            try { localStorage.setItem(MEL_ASAS_DATA_KEY, JSON.stringify(records)); } catch (e) {}
+            renderMelAsasPreview(false);
+        }
+
+        function renderMelAsasPreview(loadMeta = true) {
+            const container = document.getElementById('mel-asas-preview-container');
+            if (!container) return;
+            if (loadMeta) loadMelAsasMeta();
+
+            if (!allocatedRooms.length) {
+                container.innerHTML = getEmptyPreviewHTML('MEL ASAS');
+                return;
+            }
+
+            const cfg = getHeaderConfig();
+            const meta = getMelAsasMeta();
+            const linkedScheduleRow = getJadwalAsasRowsForLink().find(r =>
+                [String(r[0] || '').trim(), String(r[1] || '').trim()].filter(Boolean).join(', ') === meta.date &&
+                String(r[4] || '').trim() === meta.subject
+            ) || [];
+            const scheduleJamKe = linkedScheduleRow[2] || '';
+            const scheduleJam = linkedScheduleRow[3] || '';
+            const records = getMelAsasRecords();
+            const total = { pesertaL: 0, pesertaP: 0, hadirL: 0, hadirP: 0, tidakL: 0, tidakP: 0 };
+            let rowNo = 0;
+            let bodyRows = '';
+
+            allocatedRooms.forEach(room => {
+                const grouped = {};
+                (room.seats || []).forEach(stu => {
+                    const cls = String(stu.class || '-').toUpperCase();
+                    if (!grouped[cls]) grouped[cls] = { L: 0, P: 0 };
+                    const gender = normalizeGender(stu.gender);
+                    if (gender === 'L') grouped[cls].L++;
+                    else if (gender === 'P') grouped[cls].P++;
+                });
+
+                const classes = Object.keys(grouped).sort((a,b) => a.localeCompare(b, 'id', {numeric:true}));
+                // Nomor urut diberikan satu kali untuk setiap ruang, bukan setiap kelas.
+                if (classes.length === 0) return;
+                rowNo++;
+                let roomRows = '';
+                classes.forEach((cls, classIndex) => {
+                    const key = `${room.roomName}__${cls}`;
+                    const rec = records[key] || {};
+                    const g = grouped[cls];
+                    total.pesertaL += g.L;
+                    total.pesertaP += g.P;
+
+                    roomRows += `
+                        <tr>
+                            ${classIndex === 0 ? `<td rowspan="${classes.length}" class="border border-black text-center align-middle px-2 py-2 text-[10pt]">${rowNo}</td>` : ''}
+                            ${classIndex === 0 ? `<td rowspan="${classes.length}" class="mel-room-cell text-center align-middle px-2 py-2 text-[10pt] font-semibold whitespace-nowrap">${escapeHtml(room.roomName)}</td>` : ''}
+                            <td class="border border-black text-center px-2 py-2 text-[10pt]">${escapeHtml(cls)}</td>
+                            <td class="border border-black text-center px-2 py-2 text-[10pt]">${g.L}</td>
+                            <td class="border border-black text-center px-2 py-2 text-[10pt]">${g.P}</td>
+                            <td class="border border-black text-center px-2 py-2 text-[10pt] font-bold">${g.L+g.P}</td>
+                            <td class="border border-black text-center px-2 py-2 text-[10pt]">&nbsp;</td>
+                            <td class="border border-black text-center px-1">&nbsp;</td>
+                            <td class="border border-black text-center px-1">&nbsp;</td>
+                            <td class="border border-black text-center px-1">&nbsp;</td>
+                            <td class="border border-black text-center px-1">&nbsp;</td>
+                            <td class="border border-black text-center px-1">&nbsp;</td>
+                            <td class="mel-note-cell px-2 py-2 min-w-[190px] h-9 align-middle" aria-label="Keterangan ditulis manual"></td>
+                        </tr>`;
+                });
+                // Satu grup tbody per ruang: nomor dan nama ruang hanya muncul sekali.
+                bodyRows += `<tbody class="mel-room-group">${roomRows}</tbody>`;
+            });
+
+            const totalPeserta = total.pesertaL + total.pesertaP;
+
+            container.innerHTML = `
+                <div class="bg-white p-4 sm:p-6 shadow-md rounded-lg max-w-[297mm] mx-auto border font-serif text-[9pt] mel-asas-paper">
+                    <div class="flex items-center justify-between gap-3 mb-5 mel-heading">
+                        <img src="${customLogoLeftBase64 || getPemkabLogoSvg()}" class="w-36 h-28 object-contain flex-shrink-0" alt="Logo Pemkab">
+                        <div class="text-center font-bold uppercase leading-snug flex-1">
+                            <div class="text-[12pt]">MONITORING DAN EVALUASI</div>
+                            <div class="text-[11pt]">PESERTA ASESMEN SUMATIF AKHIR SEMESTER (SAS) ${escapeHtml(cfg.semester || 'GANJIL')}</div>
+                            <div class="text-[11pt]">${escapeHtml(cfg.school)}</div>
+                            <div class="text-[10pt]">TAHUN PELAJARAN ${escapeHtml(cfg.tapel)}</div>
+                        </div>
+                        <img src="${customLogoRightBase64 || getSchoolLogoSvg()}" class="w-36 h-28 object-contain flex-shrink-0" alt="Logo Sekolah">
+                    </div>
+                    <div class="grid grid-cols-2 items-start gap-4 mb-2 text-[10pt] font-semibold mel-meta">
+                        <div class="text-left pt-1">Hari/Tanggal : ${escapeHtml(meta.date)}</div>
+                        <div class="text-left space-y-1">
+                            <div class="grid grid-cols-[minmax(0,1fr)_10px_minmax(0,2fr)] gap-x-1">
+                                <span>Mata Pelajaran</span><span class="text-center">:</span><span>${escapeHtml(meta.subject)}</span>
+                            </div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_10px_minmax(0,2fr)] gap-x-1">
+                                <span>Jam Ke</span><span class="text-center">:</span><span>${escapeHtml(scheduleJamKe)}</span>
+                            </div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_10px_minmax(0,2fr)] gap-x-1">
+                                <span>Jam Pelaksanaan</span><span class="text-center">:</span><span>${escapeHtml(scheduleJam)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="w-full border-collapse border border-black text-[9.5pt]">
+                        <colgroup>
+                            <col style="width:3.5%"><col style="width:8.8%"><col style="width:5.4%">
+                            <col style="width:5.5%"><col style="width:5.5%"><col style="width:7.5%">
+                            <col style="width:5.5%"><col style="width:5.5%"><col style="width:7.5%">
+                            <col style="width:5.5%"><col style="width:5.5%"><col style="width:7.5%">
+                            <col style="width:26.8%">
+                        </colgroup>
+                        <thead>
+                            <tr class="bg-slate-300 text-center font-bold">
+                                <th rowspan="2" class="border border-black p-2 text-[10pt]">No</th>
+                                <th rowspan="2" class="mel-room-col border border-black p-2 text-[10pt] whitespace-nowrap">Ruang</th>
+                                <th rowspan="2" class="border border-black p-2 text-[10pt]">Kelas</th>
+                                <th colspan="3" class="border border-black p-2 text-[10pt]">Jumlah Peserta Ujian</th>
+                                <th colspan="3" class="border border-black p-2 text-[10pt]">Jumlah Peserta Hadir</th>
+                                <th colspan="3" class="border border-black p-2">Jumlah Peserta Tidak Hadir</th>
+                                <th rowspan="2" class="border border-black p-1">Keterangan<br>(No. Peserta dan Nama)</th>
+                            </tr>
+                            <tr class="bg-slate-200 text-center font-bold">
+                                <th class="border border-black p-2">L</th><th class="border border-black p-2">P</th><th class="border border-black p-2">Jumlah</th>
+                                <th class="border border-black p-2">L</th><th class="border border-black p-2">P</th><th class="border border-black p-2">Jumlah</th>
+                                <th class="border border-black p-2">L</th><th class="border border-black p-2">P</th><th class="border border-black p-2">Jumlah</th>
+                            </tr>
+                        </thead>
+                        ${bodyRows}
+                        <tbody class="mel-total-group">
+                            <tr class="font-bold bg-slate-200">
+                                <td colspan="3" class="border border-black text-center p-1">JUMLAH</td>
+                                <td class="border border-black text-center p-2 text-[10.5pt]">${total.pesertaL}</td>
+                                <td class="border border-black text-center p-2 text-[10.5pt]">${total.pesertaP}</td>
+                                <td class="border border-black text-center p-2 text-[10.5pt]">${totalPeserta}</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black text-center p-2">&nbsp;</td>
+                                <td class="border border-black p-2">&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-3 text-[12pt] mel-signature">
+                        <div class="w-72 text-left">
+                            <p class="relative z-20">${escapeHtml(cfg.date || meta.date || '............................')}</p>
+                            <p class="relative z-20">Kepala ${escapeHtml(cfg.school)},</p>
+                            <div class="mel-signature-mark relative h-28 w-full">
+                                ${customStempelBase64 ? `<img src="${customStempelBase64}" class="mel-signature-stamp absolute -left-3 -top-3 w-36 h-36 object-contain opacity-85 pointer-events-none z-10 thick-stamp-filter" alt="Stempel Kepala Sekolah">` : ''}
+                                ${customSignatureBase64 ? `<img src="${customSignatureBase64}" class="mel-signature-ttd absolute left-8 top-2 h-20 w-44 object-contain opacity-95 pointer-events-none z-15 thick-sig-filter" alt="Tanda tangan Kepala Sekolah">` : ''}
+                            </div>
+                            <p class="relative z-20 font-bold underline">${escapeHtml(cfg.principal)}</p>
+                            <p class="relative z-20">NIP. ${escapeHtml(cfg.nip)}</p>
+                        </div>
+                    </div>
+                    <div class="text-[9px] mt-2 text-slate-500 no-print">
+                        Jumlah peserta ujian berdasarkan pemetaan: ${totalPeserta} peserta (${total.pesertaL} L, ${total.pesertaP} P).
+                    </div>
+                </div>`;
+        }
+
         // --- HELPER FUNCTIONS & IMAGE HANDLERS ---
         function escapeHtml(str) {
             if (!str) return '';
@@ -3571,7 +4409,7 @@
                     <i class="fa-solid fa-file-circle-exclamation text-5xl mb-3 text-slate-300"></i>
                     <h4 class="text-base font-bold text-slate-600 mb-1">Belum Ada Data Untuk ${title}</h4>
                     <p class="text-xs text-slate-400 max-w-md mx-auto">
-                        Silakan masukkan data siswa di menu <strong>"2. Data Siswa"</strong> dan terapkan pemetaan di <strong>"4. Pemetaan Ruang"</strong>.
+                        Silakan masukkan data siswa di menu <strong>"3. Data Siswa"</strong> dan terapkan pemetaan di <strong>"5. Pemetaan Ruang"</strong>.
                     </p>
                 </div>
             `;
@@ -3599,6 +4437,7 @@
             else if (type === 'recap') { switchTab('tab-preview-recap'); renderRecapPreview(); }
             else if (type === 'attendance') { switchTab('tab-preview-attendance'); renderAttendancePreview(); }
             else if (type === 'seating') { switchTab('tab-preview-seating'); renderSeatingPreview(); }
+            else if (type === 'mel-asas') { switchTab('tab-mel-asas'); renderMelAsasPreview(); }
 
             showToast("Menyiapkan dokumen cetak...", "info");
             setTimeout(() => {
@@ -3614,6 +4453,7 @@
             else if (type === 'recap') { containerId = 'recap-preview-container'; title = 'Rekapitulasi Peserta - SMPN 3 Besuki'; }
             else if (type === 'attendance') { containerId = 'attendance-preview-container'; title = 'Daftar Hadir Peserta - SMPN 3 Besuki'; }
             else if (type === 'seating') { containerId = 'seating-preview-container'; title = 'Denah Nomor Bangku - SMPN 3 Besuki'; }
+            else if (type === 'mel-asas') { containerId = 'mel-asas-preview-container'; title = 'Monitoring dan Evaluasi ASAS - SMPN 3 Besuki'; }
             else if (type === 'inventory') { containerId = 'inventory-preview-container'; title = 'Rekapitulasi Ruang & Kebutuhan Meja Kursi - SMPN 3 Besuki'; }
 
             const container = document.getElementById(containerId);
@@ -3640,6 +4480,29 @@
                         .desk-3x4-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
                         .thick-stamp-filter { filter: contrast(150%) brightness(80%) drop-shadow(0px 0px 0.5px #000); mix-blend-mode: multiply; }
                         .thick-sig-filter { filter: contrast(150%) brightness(75%) drop-shadow(0px 0px 0.5px #000); mix-blend-mode: multiply; }
+                        ${type === 'mel-asas' ? `
+                        @page { size: A4 landscape; margin: 5mm 5mm; }
+                        html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+                        .mel-asas-paper { box-sizing: border-box !important; width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border: 0 !important; box-shadow: none !important; overflow: visible !important; }
+                        .mel-asas-paper table { box-sizing: border-box !important; width: 100% !important; max-width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; border-spacing: 0 !important; font-size: 8.8pt !important; }
+                        .mel-asas-paper th, .mel-asas-paper td { box-sizing: border-box !important; border: 0.55px solid #000 !important; padding: 0.65mm 0.4mm !important; line-height: 1.08 !important; vertical-align: middle !important; overflow-wrap: anywhere !important; }
+                        .mel-asas-paper th { font-size: 8.5pt !important; font-weight: 700 !important; height: 6mm !important; padding-top: 0.55mm !important; padding-bottom: 0.55mm !important; }
+                        .mel-asas-paper tbody td { font-size: 8.8pt !important; height: 6.2mm !important; min-height: 6.2mm !important; padding-top: 0.55mm !important; padding-bottom: 0.55mm !important; }
+                        .mel-asas-paper tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+                        .mel-asas-paper, .mel-asas-paper * { font-family: 'Times New Roman', Times, serif !important; }
+                        .mel-asas-paper table, .mel-asas-paper th, .mel-asas-paper td { font-size: 12.5pt !important; line-height: 1.12 !important; padding: 0.75mm 0.45mm !important; }
+                        .mel-asas-paper th { font-size: 11.5pt !important; }
+                        .mel-asas-paper .mel-meta { font-size: 11.5pt !important; line-height: 1.1 !important; margin-bottom: 1.5mm !important; }
+                        .mel-asas-paper .mel-signature { font-size: 12pt !important; margin-top: 2mm !important; }
+                        .mel-asas-paper .mel-room-cell, .mel-asas-paper th.mel-room-col { white-space: nowrap !important; overflow-wrap: normal !important; word-break: keep-all !important; }
+                        .mel-asas-paper .mel-signature-mark { height: 25mm !important; }
+                        .mel-asas-paper .mel-signature-stamp { width: 33mm !important; height: 33mm !important; left: -3mm !important; top: -4mm !important; }
+                        .mel-asas-paper .mel-signature-ttd { width: 40mm !important; height: 18mm !important; left: 8mm !important; top: 2.5mm !important; }
+                        .mel-asas-paper .mel-heading { padding-bottom: 2mm !important; margin-bottom: 1.8mm !important; border-bottom: 4px solid #000 !important; }
+                        .mel-asas-paper .mel-heading div { font-size: 12pt !important; }
+                        .mel-asas-paper .mel-heading img { width: 32mm !important; height: 24mm !important; object-fit: contain !important; }
+                        .mel-asas-paper .mel-note-cell { min-width: 0 !important; min-height: 7mm !important; height: 7mm !important; }
+                        ` : ''}
                     </style>
                 </head>
                 <body onload="setTimeout(function(){ window.print(); }, 200);" class="p-4 bg-white font-serif">
@@ -3812,6 +4675,7 @@
         window.updateClassStats = updateClassStats;
         window.askClearAllStudents = askClearAllStudents;
         window.deleteStudent = deleteStudent;
+        window.downloadStudentTemplate = downloadStudentTemplate;
         window.exportToExcel = exportToExcel;
         window.openPasteModal = openPasteModal;
         window.closePasteModal = closePasteModal;
@@ -3851,6 +4715,9 @@
         window.renderRosterPreview = renderRosterPreview;
         window.renderRecapPreview = renderRecapPreview;
         window.renderAttendancePreview = renderAttendancePreview;
+        window.renderMelAsasPreview = renderMelAsasPreview;
+        window.saveMelAsasMeta = saveMelAsasMeta;
+        window.saveMelAsasField = saveMelAsasField;
         window.updateClassroomInventoryField = updateClassroomInventoryField;
         window.addCustomClassroomRow = addCustomClassroomRow;
         window.removeCustomClassroomRow = removeCustomClassroomRow;
@@ -3859,6 +4726,7 @@
         window.renderRoomInventoryUI = renderRoomInventoryUI;
         window.triggerPrint = triggerPrint;
         window.closeConfirmModal = closeConfirmModal;
+        window.showToast = showToast;
 
         // INITIALIZATION ON PAGE LOAD
         window.onload = function() {
@@ -3887,5 +4755,63 @@
             initCloudStorage();
         };
     </script>
+
+<!-- Navigasi tahan-gagal: menjaga seluruh tab tetap dapat dibuka bila modul utama terlambat/gagal dimuat. -->
+<script>
+(function () {
+    'use strict';
+    const tabIds = [
+        'tab-identitas', 'tab-jadwal-asas', 'tab-students', 'tab-room-inventory', 'tab-shuffle',
+        'tab-preview-recap', 'tab-preview-roster', 'tab-preview-attendance',
+        'tab-preview-cards', 'tab-preview-desk', 'tab-preview-seating', 'tab-mel-asas'
+    ];
+    function showTabFallback(tabId) {
+        const target = document.getElementById(tabId);
+        if (!target) return false;
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        target.classList.remove('hidden');
+        tabIds.forEach(id => {
+            const key = id.replace(/^tab-/, '');
+            const btn = document.getElementById('nav-tab-' + key);
+            if (!btn) return;
+            btn.classList.toggle('bg-cyan-600', id === tabId);
+            btn.classList.toggle('text-white', id === tabId);
+            btn.classList.toggle('shadow', id === tabId);
+            btn.classList.toggle('font-bold', id === tabId);
+            btn.classList.toggle('text-slate-300', id !== tabId);
+        });
+        return true;
+    }
+    document.addEventListener('click', function (event) {
+        const button = event.target && event.target.closest
+            ? event.target.closest('button, [role="button"]') : null;
+        if (!button) return;
+        const inline = button.getAttribute('onclick') || '';
+        const match = inline.match(/switchTab\(\s*['"]([^'"]+)['"]\s*\)/);
+        const isMel = /openMelAsasMenu\s*\(/.test(inline);
+        if (!match && !isMel) return;
+        const tabId = isMel ? 'tab-mel-asas' : match[1];
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        try {
+            if (isMel && typeof window.openMelAsasMenu === 'function') {
+                window.openMelAsasMenu();
+                if (!document.getElementById(tabId) || !document.getElementById(tabId).classList.contains('hidden')) return;
+            } else if (!isMel && typeof window.switchTab === 'function') {
+                window.switchTab(tabId);
+                if (document.getElementById(tabId) && !document.getElementById(tabId).classList.contains('hidden')) return;
+            }
+        } catch (err) {
+            console.warn('Navigasi utama gagal; menggunakan navigasi cadangan.', err);
+        }
+        showTabFallback(tabId);
+    }, true);
+    // Ekspos fungsi dasar agar tautan/menu lain dapat memanggil navigasi dengan aman.
+    if (typeof window.switchTab !== 'function') {
+        window.switchTab = showTabFallback;
+    }
+})();
+</script>
+
 </body>
 </html>
